@@ -1,0 +1,58 @@
+<div class="profile-container">
+  <div *ngIf="isLoading" class="loading">
+    <div class="spinner"></div>
+    <p>Đang tải hồ sơ...</p>
+  </div>
+
+  <div *ngIf="!isLoading && user" class="profile-card">
+    <div class="profile-header">
+      <img [src]="user.avatar" [alt]="user.fullName" class="avatar" />
+      <div class="profile-info">
+        <h1>{{ user.fullName }}</h1>
+        <p class="username">&#64;{{ user.username }}</p>
+      </div>
+    </div>
+
+    <div class="profile-details">
+      <div class="detail-item">
+        <span class="label">Email:</span>
+        <span class="value">{{ user.email }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="label">Số điện thoại:</span>
+        <span class="value">{{ user.phoneNumber || 'Chưa cập nhật' }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="label">ID:</span>
+        <span class="value">{{ user.id }}</span>
+      </div>
+      <div class="detail-item" *ngIf="user.role">
+        <span class="label">Quyền:</span>
+        <span class="value role-badge" [style.backgroundColor]="permissionService.getRoleColor(user.role)">
+          {{ permissionService.getRoleLabel(user.role) }}
+        </span>
+      </div>
+      <div class="detail-item" *ngIf="user.permissions && user.permissions.length">
+        <span class="label">Permissions:</span>
+        <div class="permissions-list">
+          <span class="permission-tag" *ngFor="let perm of user.permissions">
+            {{ perm }}
+          </span>
+        </div>
+      </div>
+      <div class="detail-item">
+        <span class="label">Ngày tạo:</span>
+        <span class="value">{{ user.createdAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="label">Cập nhật lần cuối:</span>
+        <span class="value">{{ user.updatedAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+      </div>
+    </div>
+
+    <div class="profile-actions">
+      <button class="btn btn-secondary" routerLink="/">Trang Chủ</button>
+      <button class="btn btn-danger" (click)="logout()">Đăng Xuất</button>
+    </div>
+  </div>
+</div>

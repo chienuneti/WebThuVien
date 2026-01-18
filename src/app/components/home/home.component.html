@@ -1,0 +1,111 @@
+<div class="home-container">
+  <section class="hero">
+    <div class="hero-content">
+      <h1>📚 Thư Viện Số</h1>
+      <p>Khám phá, đọc và tải sách từ thư viện số của chúng tôi</p>
+      
+      <div class="hero-actions">
+        <a routerLink="/library" class="btn btn-primary">📖 Khám phá thư viện</a>
+        <a *ngIf="!isAuthenticated" routerLink="/dang-nhap" class="btn btn-secondary">Đăng Nhập</a>
+        <a *ngIf="isAuthenticated" routerLink="/profile" class="btn btn-secondary">Hồ sơ của tôi</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="library-preview">
+    <h2>📚 Sách Mới Nhất</h2>
+    <div class="books-grid">
+      <div *ngFor="let book of featuredBooks" class="book-card" [routerLink]="['/library/book', book.id]">
+        <div class="book-cover">
+          <img [src]="book.cover" [alt]="book.title" />
+        </div>
+        <div class="book-info">
+          <h3>{{ book.title }}</h3>
+          <p class="author">{{ book.author.name }}</p>
+          <span class="rating">⭐ {{ book.rating }}/5</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="library-preview">
+    <h2>⭐ Sách Phổ Biến</h2>
+    <div class="books-grid">
+      <div *ngFor="let book of popularBooks" class="book-card" [routerLink]="['/library/book', book.id]">
+        <div class="book-cover">
+          <img [src]="book.cover" [alt]="book.title" />
+        </div>
+        <div class="book-info">
+          <h3>{{ book.title }}</h3>
+          <p class="author">{{ book.author.name }}</p>
+          <span class="rating">⭐ {{ book.rating }}/5</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="library-preview">
+    <h2>🔥 Đang Trending</h2>
+    <div class="books-grid">
+      <div *ngFor="let book of trendingBooks" class="book-card" [routerLink]="['/library/book', book.id]">
+        <div class="book-cover">
+          <img [src]="book.cover" [alt]="book.title" />
+        </div>
+        <div class="book-info">
+          <h3>{{ book.title }}</h3>
+          <p class="author">{{ book.author.name }}</p>
+          <span class="downloads">📥 {{ book.downloads }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <h2>Tính Năng Chính</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3>Tìm Kiếm Nâng Cao</h3>
+        <p>Tìm kiếm sách theo tên, tác giả, thể loại</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📖</div>
+        <h3>Đọc Trực Tuyến</h3>
+        <p>Đọc sách trực tiếp trên web hoặc tải xuống</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⭐</div>
+        <h3>Đánh Giá & Bình Luận</h3>
+        <p>Chia sẻ ý kiến của bạn về sách</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">❤️</div>
+        <h3>Lưu Sách Yêu Thích</h3>
+        <p>Lưu sách để đọc lại sau</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="test-credentials">
+    <h2>Thông Tin Đăng Nhập Demo</h2>
+    <div class="credentials-table">
+      <div class="cred-row">
+        <strong>Username:</strong>
+        <span>testuser (User bình thường)</span>
+      </div>
+      <div class="cred-row">
+        <strong>Password:</strong>
+        <span>Test&#64;123</span>
+      </div>
+      <hr>
+      <div class="cred-row">
+        <strong>Username:</strong>
+        <span>johndoe</span>
+      </div>
+      <div class="cred-row">
+        <strong>Password:</strong>
+        <span>John&#64;123</span>
+      </div>
+    </div>
+  </section>
+</div>
