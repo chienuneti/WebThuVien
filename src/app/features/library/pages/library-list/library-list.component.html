@@ -1,0 +1,92 @@
+<div class="library-page-wrapper">
+  <!-- Phần Header với Hình nền và Tìm kiếm -->
+  <header class="library-hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="search-container">
+        <input type="text" [(ngModel)]="searchKeyword" (keyup.enter)="onSearch()" placeholder="Search by title, subject, keyword..."
+          class="hero-search-input" />
+        <button class="hero-search-btn" (click)="onSearch()">
+          <i class="search-icon">🔍</i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Phần 4 ô nổi (Floating Cards) -->
+  <section class="quick-nav-container" style="margin-top: 90px;">
+    <div class="nav-grid">
+
+      <!-- Ô 1: Thể loại -->
+      <div class="nav-card" [routerLink]="['/library/browse', 'document-types']">
+        <div class="card-icon blue-icon">📖</div>
+        <h2 class="card-title">Document Type</h2>
+      </div>
+
+      <!-- Ô 2: Collection -->
+      <div class="nav-card" [routerLink]="['/library/browse', 'collections']">
+        <div class="card-icon blue-icon">📚</div>
+        <h2 class="card-title">Collection</h2>
+      </div>
+
+      <!-- Ô 3: Community -->
+      <div class="nav-card" [routerLink]="['/library/browse', 'communities']">
+        <div class="card-icon blue-icon">👥</div>
+        <h2 class="card-title">Community</h2>
+      </div>
+
+      <!-- Ô 4: Tác giả -->
+      <div class="nav-card" [routerLink]="['/library/browse', 'authors']">
+        <div class="card-icon blue-icon">👤</div>
+        <h2 class="card-title">Author profile</h2>
+      </div>
+
+      <!-- Ô 5: Mới - Submit -->
+      <div class="nav-card" (click)="submitDocument()">
+        <div class="card-icon blue-icon">📤</div>
+        <h2 class="card-title">Submit Document</h2>
+      </div>
+
+      <!-- Ô 6: Mới - Review (Căn giữa cùng ô 5) -->
+      <div class="nav-card" (click)="reviewSubmision()">
+        <div class="card-icon blue-icon">📋</div>
+        <h2 class="card-title">Review Submission</h2>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="library-page-wrapper">
+
+    <!-- PHẦN THAY ĐỔI: Hiển thị 8 mục tiêu biểu -->
+    <main class="main-content">
+      <div class="section-title-wrapper">
+        <h2 class="featured-title">Danh mục nổi bật</h2>
+      </div>
+
+      <!-- Khung cửa sổ hiển thị (Overflow Hidden) -->
+      <div class="carousel-window">
+        <!-- Thanh trượt chứa các item -->
+        <div class="featured-grid" [style.transform]="carouselTransform">
+          <div class="featured-card" *ngFor="let item of featuredItems" [routerLink]="item.link">
+            <div class="card-image">
+              <img [src]="item.image" [alt]="item.title" (error)="onImgError($event)">
+            </div>
+            <div class="card-body">
+              <span class="type-tag">{{ item.type }}</span>
+              <h3 class="item-title">{{ item.title }}</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Carousel Indicators (Các nút chuyển trang) -->
+      <div class="carousel-indicators">
+        <!-- Dot 1 cho 4 ảnh đầu -->
+        <span class="dot" [class.active]="currentPage === 0" (click)="setPage(0)"></span>
+        <!-- Dot 2 cho 4 ảnh sau -->
+        <span class="dot" [class.active]="currentPage === 1" (click)="setPage(1)"></span>
+      </div>
+    </main>
+  </div>
+</div>

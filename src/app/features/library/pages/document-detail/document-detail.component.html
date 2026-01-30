@@ -1,0 +1,229 @@
+<div class="book-detail-container" *ngIf="document">
+  <div class="book-header">
+    <div class="book-main">
+      <!-- Cột trái: Ảnh bìa & Hành động -->
+      <div class="book-cover-section">
+        <div class="book-cover-large">
+          <!-- Sử dụng ảnh mặc định nếu không có coverPath -->
+          <!-- Sửa doc thành document -->
+<img [src]="document.coverPath ? '/' + document.coverPath : '/assets/images/default-book.png'" 
+     (error)="onImgError($event)"
+     [alt]="document.title" />
+        </div>
+        <div class="book-actions">
+  <!-- Nút Đọc: Dẫn sang trang Reader -->
+  <a [routerLink]="['/library/read', document.id]" class="btn-primary">
+    📖 Đọc trực tuyến
+  </a>
+
+  <!-- Nút Tải xuống: Gọi hàm download file phiên bản mới nhất -->
+  <button class="btn-secondary" *ngIf="files.length > 0" (click)="download(files[0])">
+    📥 Tải xuống (V{{files[0].version}})
+  </button>
+</div>
+      </div>
+
+      <!-- Cột phải: Thông tin chi tiết -->
+      <div class="book-info-section">
+        <h1 class="book-title">{{ document.title }}</h1>
+  
+  <!-- Cập nhật hiển thị Tác giả (vì authors là mảng object) -->
+  <p class="book-author">Tác giả: 
+    <span *ngFor="let author of document.authors; let last = last">
+      <strong>{{ author.name }}</strong>{{ !last ? ', ' : '' }}
+    </span>
+  </p>
+
+  <!-- PHẦN MỚI: HIỂN THỊ IDENTIFIERS (Mã định danh) -->
+  <div class="identifiers-list" *ngIf="document.identifiers && document.identifiers.length > 0">
+    <div class="identifier-item" *ngFor="let iden of document.identifiers">
+      <span class="iden-label">{{ iden.type }}:</span>
+      <span class="iden-value">{{ iden.value }}</span>
+    </div>
+  </div>
+
+        <!-- ... các phần trên giữ nguyên ... -->
+<div class="book-meta">
+  <div class="meta-item">
+    <div class="meta-label">Loại tài liệu</div>
+    <div class="meta-value">{{ document.documentType }}</div>
+  </div>
+  <div class="meta-item">
+    <div class="meta-label">Số trang</div>
+    <div class="meta-value">{{ document.pageNum }}</div>
+  </div>
+  <div class="meta-item">
+    <div class="meta-label">Năm xuất bản</div>
+    <div class="meta-value">{{ document.publicationDate | date: 'yyyy' }}</div>
+  </div>
+</div>
+
+<!-- THÔNG TIN CHI TIẾT THEO LOẠI (Internal, Thesis, Research, ...) -->
+<div class="type-specific-info" *ngIf="document.internalBook || document.thesis || document.research || document.externalBook || document.researchPublication">
+  
+  <!-- Hiển thị cho Thesis (Luận văn) -->
+<div *ngIf="document.thesis">
+  <!-- Các thông tin ngắn thì để trong Grid -->
+  <div class="sub-info-grid">
+    <div class="sub-info-item">
+      <span class="sub-label">Cấp bậc:</span>
+      <span class="sub-value">{{ document.thesis.degreeLevel || '---' }}</span>
+    </div>
+    <div class="sub-info-item">
+      <span class="sub-label">Chuyên ngành:</span>
+      <span class="sub-value">{{ document.thesis.discipline || '---' }}</span>
+    </div>
+    <div class="sub-info-item">
+      <span class="sub-label">GV Hướng dẫn:</span>
+      <span class="sub-value">{{ document.thesis.advisorName || '---' }}</span>
+    </div>
+  </div>
+
+  <!-- Phần Abstract tách riêng xuống dưới để rộng rãi -->
+  <div class="abstract-block" *ngIf="document.thesis.abstract">
+    <span class="sub-label">Tóm tắt luận văn:</span>
+    <p class="abstract-content">{{ document.thesis.abstract }}</p>
+  </div>
+</div>
+
+
+
+  <!-- 2. Hiển thị cho InternalBook (Sách nội bộ) -->
+  <div class="sub-info-grid" *ngIf="document.internalBook">
+    <div class="sub-info-item">
+      <span class="sub-label">Khoa:</span>
+      <span class="sub-value">{{ document.internalBook.faculty }}</span>
+    </div>
+    <div class="sub-info-item">
+      <span class="sub-label">Loại bài giảng:</span>
+      <span class="sub-value">{{ document.internalBook.documentType }}</span>
+    </div>
+    <div class="sub-info-item">
+      <span class="sub-label">Phiên bản:</span>
+      <span class="sub-value">V.{{ document.internalBook.version }}</span>
+    </div>
+  </div>
+
+  <div class="sub-info-grid" *ngIf="document.research">
+    <div class="sub-info-item">
+      <span class="sub-label">Cấp quản lý:</span>
+      <span class="sub-value">{{ document.research.researchLevel }}</span>
+    </div>
+    <div class="sub-info-item">
+      <span class="sub-label">Tóm tắt đề tài:</span>
+      <span class="sub-value">{{ document.research.abstract }}</span>
+    </div>
+  </div>
+
+  <div class="sub-info-grid" *ngIf="document.externalBook">
+    <div class="sub-info-item">
+      <span class="sub-label">Nhà xuất bản:</span>
+      <span class="sub-value">{{ document.externalBook.publisher }}</span>
+    </div>
+    <div class="sub-info-item">
+      <span class="sub-label">Phiên bản:</span>
+      <span class="sub-value">{{ document.externalBook.version }}</span>
+    </div>
+  </div>
+
+  <div class="sub-info-grid" *ngIf="document.researchPublication">
+    <div class="sub-info-item">
+      <span class="sub-label">Nơi công bố:</span>
+      <span class="sub-value">{{ document.researchPublication.venueName }}</span>
+    </div>
+    <div class="sub-info-item">
+      <span class="sub-label">Loại công bố:</span>
+      <span class="sub-value">{{ document.researchPublication.publicationType }}</span>
+    </div>
+  </div>
+</div>
+
+<div class="book-description">
+<!-- ... các phần sau giữ nguyên ... -->
+
+        <div class="book-description">
+          <h3>Mô tả tài liệu</h3>
+          <p>{{ document.description || 'Chưa có mô tả cho tài liệu này.' }}</p>
+        </div>
+        <div class="book-tags" *ngIf="document.keywords">
+          <span class="tag" *ngFor="let kw of document.keywords">#{{ kw }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHẦN ĐÁNH GIÁ & BÌNH LUẬN (Thay thế cho danh sách tệp tin) -->
+<div class="reviews-section">
+  <h2 class="section-title">Reviews({{ reviews.length }})</h2>
+
+  <!-- 1. Form gửi bình luận mới -->
+  <div class="add-review-container" *ngIf="isLoggedIn; else loginPrompt">
+    <h3>Viết nhận xét của bạn</h3>
+    <div class="rating-input">
+      <span *ngFor="let i of [1,2,3,4,5]" 
+            (click)="userRating = i" 
+            [class.active]="i <= userRating"
+            class="star-icon">★</span>
+      <span class="rating-label">{{ userRating }}/5 sao</span>
+    </div>
+    <textarea 
+      [(ngModel)]="userComment" 
+      placeholder="Chia sẻ cảm nghĩ của bạn về tài liệu này..."
+      class="comment-textarea"></textarea>
+    <div class="form-actions">
+      <button 
+        (click)="submitReview()" 
+        [disabled]="!userComment.trim() || isSubmitting" 
+        class="btn-submit-review">
+        {{ isSubmitting ? 'Đang gửi...' : 'Gửi đánh giá' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Thông báo nếu chưa đăng nhập -->
+  <ng-template #loginPrompt>
+    <div class="login-msg">
+      <p>Vui lòng <a routerLink="/dang-nhap">đăng nhập</a> để gửi đánh giá và bình luận cho tài liệu này.</p>
+    </div>
+  </ng-template>
+
+  <!-- 2. Danh sách các bình luận hiện có -->
+  <div class="reviews-list">
+    <div *ngFor="let r of reviews" class="review-item-card">
+      <div class="review-header">
+        <!-- Avatar giả lập bằng chữ cái đầu tên -->
+        <div class="user-avatar">{{ r.userName.charAt(0).toUpperCase() }}</div>
+        <div class="user-info">
+          <div class="user-name">{{ r.userName }}</div>
+          <div class="user-rating-stars">
+            <span *ngFor="let s of [1,2,3,4,5]" 
+                  [class.filled]="s <= (r.rating || 0)">★</span>
+          </div>
+        </div>
+        <div class="review-date">{{ r.createdAt | date:'dd/MM/yyyy' }}</div>
+      </div>
+      <div class="review-content">
+        {{ r.content }}
+      </div>
+    </div>
+
+    <!-- Trạng thái trống -->
+    <div *ngIf="reviews.length === 0" class="no-reviews">
+      <div class="empty-icon">💬</div>
+      <p>Chưa có bình luận nào. Hãy là người đầu tiên chia sẻ cảm nghĩ!</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Loading State -->
+<div *ngIf="loading" class="loading-overlay">
+  <div class="spinner"></div>
+  <p>Đang tải dữ liệu...</p>
+</div>
+
+<!-- Error State -->
+<div *ngIf="error" class="error-container">
+  <p>{{ error }}</p>
+  <button routerLink="/library">Quay lại danh sách</button>
+</div>
