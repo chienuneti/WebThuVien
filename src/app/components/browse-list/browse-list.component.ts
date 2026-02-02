@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, Location } from '@angular/common'; // Import Location
+import { CommonModule, Location } from '@angular/common'; 
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DocumentService } from '../../shared/services/document.service';
-// import { DocumentListDto } from '../../models/book.model'; // Nếu cần
 import { Observable } from 'rxjs';
 
 @Component({
@@ -10,7 +9,7 @@ import { Observable } from 'rxjs';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './browse-list.component.html',
-  styleUrl: './browse-list.component.css' // Chú ý: styleUrl (Angular 17+) hoặc styleUrls
+  styleUrl: './browse-list.component.css'
 })
 export class BrowseListComponent implements OnInit {
   category: string = '';
@@ -18,10 +17,9 @@ export class BrowseListComponent implements OnInit {
   title: string = '';
   isLoading = true;
 
-  // --- Biến Phân trang ---
   currentPage = 1;
   totalPages = 1;
-  pageSize = 12; // Số lượng item trên 1 trang
+  pageSize = 12; 
   totalItems = 0;
 
   constructor(
@@ -32,11 +30,9 @@ export class BrowseListComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Lắng nghe thay đổi trên URL (cả category và page)
     this.route.params.subscribe(params => {
       this.category = params['category'];
       
-      // Sau khi có category, lắng nghe tiếp query params (page)
       this.route.queryParams.subscribe(queries => {
         this.currentPage = queries['page'] ? +queries['page'] : 1;
         this.updateHeaderTitle();
@@ -45,7 +41,6 @@ export class BrowseListComponent implements OnInit {
     });
   }
 
-  // Hàm quay lại
   goBack() {
     this.location.back();
   }
@@ -62,13 +57,11 @@ export class BrowseListComponent implements OnInit {
   loadData() {
     this.isLoading = true;
     
-    // Tạo params phân trang
     const params = {
       page: this.currentPage,
       pageSize: this.pageSize
     };
 
-    // Gọi API tương ứng (Giả sử các hàm này trong Service đã hỗ trợ nhận params)
     let request: Observable<any>;
 
     if (this.category === 'authors') {
@@ -78,20 +71,16 @@ export class BrowseListComponent implements OnInit {
     } else if (this.category === 'communities') {
       request = this.documentService.getCommunities(params);
     } else {
-      // Document Types thường ít, có thể không cần phân trang, nhưng cứ gọi thống nhất
       request = this.documentService.getDocumentTypes(params);
     }
 
     request.subscribe({
       next: (res: any) => {
-        // Kiểm tra xem BE trả về dạng PaginatedResult hay Array thường
         if (res.data) {
-          // Trường hợp trả về PaginatedResult
           this.items = res.data;
           this.totalPages = res.totalPages;
           this.totalItems = res.totalItems;
         } else {
-          // Trường hợp BE trả về mảng (chưa phân trang server), ta hiển thị hết
           this.items = res;
           this.totalPages = 1; 
           this.totalItems = res.length;
@@ -107,7 +96,6 @@ export class BrowseListComponent implements OnInit {
     });
   }
 
-  // Hàm chuyển trang
   changePage(newPage: number) {
     if (newPage >= 1 && newPage <= this.totalPages) {
       this.router.navigate([], {

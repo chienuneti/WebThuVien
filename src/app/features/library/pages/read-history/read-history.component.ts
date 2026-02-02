@@ -8,7 +8,7 @@ import { RouterModule } from '@angular/router';
   imports: [CommonModule, RouterModule],
   template: `
     <div class="history-container">
-      <h1>📖 Lịch sử đọc sách của tôi</h1>
+      <h1>Lịch sử đọc sách của tôi</h1>
       
       <div class="empty-state">
         <p>Bạn chưa đọc sách nào</p>

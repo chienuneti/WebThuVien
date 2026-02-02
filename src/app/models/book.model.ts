@@ -1,8 +1,3 @@
-/**
- * Book Models & Interfaces
- * For digital library system
- */
-
 export interface Author {
   id: string;
   name: string;
@@ -25,7 +20,7 @@ export interface Review {
   id: string;
   documentId: string;
   userId: string;
-  userName: string; // Tên hiển thị lấy từ BE
+  userName: string;
   rating: number;
   content: string;
   createdAt: string;
@@ -34,7 +29,7 @@ export interface Review {
 export interface CommunityTreeDto {
   id: string;
   name: string;
-  children: CommunityTreeDto[]; // Quan trọng: BE trả về List thì FE phải có mảng này
+  children: CommunityTreeDto[]; 
 }
 
 export interface Document {
@@ -78,12 +73,10 @@ export interface DocumentDetailDto {
   authors: Author[];
   keywords: string[];
   identifiers: Identifier[];
-  // Các trường thống kê mới từ BE
   avgRating: number;
   totalReviews: number;
   totalDownloads: number;
   totalViews: number;
-  // Khối thông tin đặc thù
   internalBook?: InternalBook;
   thesis?: Thesis;
   research?: Research;
@@ -95,7 +88,7 @@ export interface DocumentDetailDto {
 export interface InternalBook {
   docid: string;
   faculty: string;
-  documentType: string; // Sửa documenttype -> documentType
+  documentType: string; 
   version: number;
 }
 
@@ -115,22 +108,22 @@ export interface Thesis{
 
 export interface ResearchPublication {
   docid: string;
-  venueName: string;      // Sửa venuename -> venueName
-  publicationType: string; // Sửa publicationtype -> publicationType
+  venueName: string;     
+  publicationType: string; 
 }
 
 export interface Research {
   docid: string;
   abstract: string;
-  researchLevel: string; // Sửa researchlevel -> researchLevel
+  researchLevel: string; 
 }
 
 export interface DocFile{
   id: string;
-  docid: string;
-  filepath: string;
+  docId: string;
+  filePath: string;
   version: number;
-  changenote: string;
+  changeNote: string;
 }
 
 export interface Collection{
@@ -205,9 +198,21 @@ export interface SubmissionHistory{
   id: string;
   submissionid: string;
   performedby: string;
+  performedname: string;
   action: string;
   comments?: string;
   createdat: Date;
+}
+
+export interface SubmissionListDto{
+  submissionId: string;
+  documentTitle: string;
+  documentType: string;
+  collectionName: string;
+  createdAt: Date;
+  status: string;
+  currentStep: number;
+  reviewerCount: number;
 }
 
 export interface User{
@@ -222,11 +227,55 @@ export interface User{
   class?: string;
 }
 
-// Thêm vào file book.model.ts
 export interface DocumentPopularDto extends DocumentListDto {
   downloadCount: number;
 }
 
 export interface DocumentList2Dto extends DocumentListDto {
   viewCount: number;
+}
+
+export interface CreateAuthorDto {
+  name: string;
+  email?: string;
+  orcid?: string;
+  description?: string;
+  expertise?: string;
+  imageFile?: File | null;
+  imagePreview?: string | ArrayBuffer | null;
+}
+
+export interface CreateIdentifierDto {
+  type: string;  
+  value: string; 
+}
+
+export interface CreateLicenseDto {
+  id?: string;       
+  name?: string;     
+  content?: string;  
+  uiMode?: 'SELECT' | 'NEW'; 
+  selectedId?: string; 
+}
+
+export interface CreateDocumentForm {
+  title: string;
+  description: string;
+  documentType: 'InternalBook' | 'ExternalBook' | 'Thesis' | 'Research' | 'ResearchPublication';
+  collectionId: string;
+  publicationDate?: string;
+  pageNum?: number;
+  introEndPage?: number;
+  file: File | null;
+  coverFile: File | null;
+  keywords: string; 
+  authors: CreateAuthorDto[];
+  identifiers: CreateIdentifierDto[]; 
+  licenses: CreateLicenseDto[];       
+
+  internalBook?: { faculty: string; documentType: string; version: string };
+  externalBook?: { publisher: string; version: string };
+  thesis?: { degreeLevel: string; discipline: string; advisorName: string; abstract: string };
+  research?: { abstract: string; researchLevel: string };
+  researchPublication?: { venueName: string; publicationType: string };
 }

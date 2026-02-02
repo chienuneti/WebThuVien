@@ -46,12 +46,13 @@ export class LibraryListComponent {
   onImgError(event: any) { event.target.src = '/assets/images/default-book.png'; }
 
   submitDocument() {
-    console.log('Chuyển hướng đến trang nộp tài liệu');
-    this.router.navigate(['/library/submit']); // Ví dụ đường dẫn
+    this.router.navigate(['/library/submission-dashboard']); // Ví dụ đường dẫn
   }
 
   reviewSubmision() {
-    console.log('Chuyển hướng đến trang duyệt bài');
-    this.router.navigate(['/library/review']); // Ví dụ đường dẫn
+    this.router.navigate(['/library/review-dashboard']); // Ví dụ đường dẫn
+  }
+  assignapprove() {
+    this.router.navigate(['/library/assign-approve']); // Ví dụ đường dẫn
   }
 }

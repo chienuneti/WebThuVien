@@ -1,4 +1,3 @@
-/* GIỮ NGUYÊN GỐC HERO CỦA BẠN */
 .home-container {
   background: linear-gradient(to bottom, #f5f7fa, #ffffff);
   min-height: 100vh;
@@ -88,7 +87,6 @@
   border: 2px solid white;
 }
 
-/* PHẦN DÀNH CHO CÁC MỤC TÀI LIỆU CHIỀU DỌC */
 .main-content {
   max-width: 1300px;
   margin: 0 auto;
@@ -96,7 +94,7 @@
 }
 
 .doc-section {
-  margin-bottom: 80px; /* Khoảng cách dọc giữa các phần */
+  margin-bottom: 80px;
 }
 
 .section-header {
@@ -121,7 +119,6 @@
   font-weight: 600;
 }
 
-/* Lưới Card */
 .books-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));

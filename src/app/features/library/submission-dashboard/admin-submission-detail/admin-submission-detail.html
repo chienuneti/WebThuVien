@@ -1,0 +1,81 @@
+<div class="library-page-wrapper">
+  <header class="content-header">
+    <div>
+      <h1 class="page-title">Admin Review Panel</h1>
+      <p class="page-subtitle">Quản lý phân công và phê duyệt (Thủ thư)</p>
+    </div>
+    <button class="btn-primary-gradient" (click)="backToList()">
+      Quay lại danh sách
+    </button>
+  </header>
+
+  <main>
+    <div class="admin-controls-card" *ngIf="submission">
+      <div class="control-section">
+        <h3>1. Phân công thẩm định</h3>
+        <p class="hint">Chọn giảng viên phù hợp để Review tài liệu này.</p>
+        <div class="action-group">
+          <select class="styled-select" [(ngModel)]="selectedReviewerId">
+            <option value="">-- Chọn Giảng viên --</option>
+            <option *ngFor="let lec of lecturers" [value]="lec.id">
+              {{ lec.name }} ({{ lec.email }})
+            </option>
+          </select>
+          <button class="btn-action assign" (click)="onAssign()" 
+                  [disabled]="submission.status === 'Accept' || submission.status === 'Reject'">
+            Giao việc
+          </button>
+        </div>
+      </div>
+
+      <div class="control-section border-left">
+  <h3>2. Phê duyệt cuối cùng</h3>
+  <p class="hint">Tiến độ: <b>{{ reviewStatusText }}</b></p>
+  
+  <button class="btn-action approve" 
+          (click)="onApprove()"
+          [disabled]="!canApprove"
+          [title]="reviewStatusText">
+    Duyệt kết quả (Finalize)
+  </button>
+</div>
+    </div>
+
+    <div class="table-card-wrapper mt-4">
+      <div class="table-toolbar">
+        <h2 class="section-title">Workflow History</h2>
+      </div>
+
+      <div class="table-responsive" *ngIf="!isLoading; else loadingTpl">
+        <table class="styled-table" *ngIf="histories.length > 0; else emptyTpl">
+          <thead>
+            <tr>
+              <th width="20%">Thời gian</th>
+              <th width="20%">Người thực hiện</th>
+              <th width="15%">Hành động</th>
+              <th>Ghi chú / Nhận xét</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let h of histories" class="table-row">
+              <td>
+                <div class="date-wrapper">
+                  <span class="date-text">{{ h.createdAt | date:'dd/MM/yyyy' }}</span>
+                  <span class="time-text">{{ h.createdAt | date:'HH:mm:ss' }}</span>
+                </div>
+              </td>
+              <td class="user-text">{{ h.performedByName }}</td>
+              <td>
+                <span class="status-pill" [ngClass]="h.action">{{ h.action }}</span>
+              </td>
+              <td class="comment-text">{{ h.comment || 'Không có mô tả' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<ng-template #loadingTpl><div class="loading-text">Đang tải dữ liệu...</div></ng-template>
+<ng-template #emptyTpl><div class="empty-text">Chưa có lịch sử xử lý cho tài liệu này.</div></ng-template>

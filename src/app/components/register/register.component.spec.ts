@@ -95,6 +95,5 @@ describe('RegisterComponent', () => {
 
   it('should disable submit button when form is invalid', () => {
     expect(component.registerForm.invalid).toBeTruthy();
-    // Form should be invalid initially
   });
 });

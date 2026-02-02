@@ -27,15 +27,12 @@ export class RegisterComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Check if already logged in
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/']);
     }
   }
 
-  /**
-   * Initialize form with validation rules
-   */
+
   private initializeForm(): void {
     this.registerForm = this.fb.group({
       fullName: ['', [Validators.required, Validators.minLength(3)]],
@@ -49,9 +46,7 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  /**
-   * Custom validator to check if passwords match
-   */
+
   private passwordMatchValidator(form: FormGroup): { [key: string]: boolean } | null {
     const password = form.get('password');
     const confirmPassword = form.get('confirmPassword');
@@ -63,31 +58,23 @@ export class RegisterComponent implements OnInit {
     return password.value === confirmPassword.value ? null : { passwordMismatch: true };
   }
 
-  /**
-   * Get form controls for template
-   */
+
   get f() {
     return this.registerForm.controls;
   }
 
-  /**
-   * Toggle password visibility
-   */
+  
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
 
-  /**
-   * Check field validation for error display
-   */
+ 
   isFieldInvalid(fieldName: string): boolean {
     const field = this.registerForm.get(fieldName);
     return !!(field && field.invalid && (field.dirty || field.touched));
   }
 
-  /**
-   * Get error message for field
-   */
+ 
   getFieldError(fieldName: string): string {
     const field = this.registerForm.get(fieldName);
 
@@ -125,9 +112,7 @@ export class RegisterComponent implements OnInit {
     return '';
   }
 
-  /**
-   * Get friendly field label
-   */
+
   private getFieldLabel(fieldName: string): string {
     const labels: { [key: string]: string } = {
       fullName: 'Họ và tên',
@@ -140,9 +125,7 @@ export class RegisterComponent implements OnInit {
     return labels[fieldName] || fieldName;
   }
 
-  /**
-   * Submit registration form
-   */
+
   onSubmit(): void {
     this.errorMessage = '';
     this.successMessage = '';
@@ -178,21 +161,14 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-  /**
-   * Login with Google OAuth
-   */
+
   loginWithGoogle(): void {
-    // This will be implemented with Google OAuth library (e.g., @react-oauth/google)
-    // For now, this is a placeholder
-    alert('Google login sẽ được kích hoạt sau khi cấu hình Google OAuth');
     
-    // Example implementation:
-    // this.authService.loginWithGoogle({ googleToken: token }).subscribe({...});
+    alert('Google login sẽ được kích hoạt sau khi cấu hình Google OAuth');
+  
   }
 
-  /**
-   * Navigate to login page
-   */
+
   goToLogin(): void {
     this.router.navigate(['/dang-nhap']);
   }

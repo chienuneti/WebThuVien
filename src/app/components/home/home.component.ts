@@ -35,10 +35,9 @@ export class HomeComponent implements OnInit {
     this.loading = true;
 
     forkJoin({
-      // Dùng pipe(catchError) cho từng request để nếu 1 cái lỗi, trang web vẫn hiện các phần còn lại
       all: this.documentService.getAll().pipe(catchError(err => {
         console.error('Lỗi lấy All Docs:', err);
-        return of([]); // Trả về mảng rỗng nếu lỗi
+        return of([]); 
       })),
       trending: this.documentService.getTrending().pipe(catchError(err => {
         console.error('Lỗi lấy Trending:', err);
@@ -49,18 +48,14 @@ export class HomeComponent implements OnInit {
         return of([]);
       }))
     }).pipe(
-      // finalize đảm bảo loading luôn tắt dù có lỗi code hay lỗi mạng
       finalize(() => {
         this.loading = false;
       })
     ).subscribe({
       next: (res) => {
 
-        // Xử lý an toàn: Nếu res.all là null/undefined thì dùng mảng rỗng []
-        // Tránh lỗi "is not iterable"
         const allResult = res.all as any;
 
-        // 2. Kiểm tra và gán dữ liệu
         if (allResult && allResult.data) {
           this.newDocs = allResult.data.slice(0, 5);
         } else {
@@ -69,10 +64,6 @@ export class HomeComponent implements OnInit {
 
         this.trendingDocs = Array.isArray(res.trending) ? res.trending.slice(0, 5) : [];
         this.popularDocs = Array.isArray(res.popular) ? res.popular.slice(0, 5) : [];
-      },
-      error: (err) => {
-        console.error('Lỗi nghiêm trọng trong forkJoin:', err);
-        // finalize sẽ lo việc tắt loading, không cần set false ở đây nữa
       }
     });
   }

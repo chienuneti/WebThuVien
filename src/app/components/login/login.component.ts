@@ -27,12 +27,10 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Check if already logged in
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/']);
     }
 
-    // Load remembered username if exists
     const rememberedUsername = localStorage.getItem('remembered_username');
     if (rememberedUsername) {
       this.loginForm.patchValue({
@@ -42,9 +40,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  /**
-   * Initialize login form
-   */
+
   private initializeForm(): void {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required]],
@@ -52,31 +48,22 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  /**
-   * Get form controls
-   */
+
   get f() {
     return this.loginForm.controls;
   }
 
-  /**
-   * Toggle password visibility
-   */
+
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
 
-  /**
-   * Check if field is invalid
-   */
+
   isFieldInvalid(fieldName: string): boolean {
     const field = this.loginForm.get(fieldName);
     return !!(field && field.invalid && (field.dirty || field.touched));
   }
 
-  /**
-   * Submit login form
-   */
   onSubmit(): void {
     this.errorMessage = '';
 
@@ -91,7 +78,6 @@ export class LoginComponent implements OnInit {
       password: this.loginForm.value.password
     };
 
-    // Remember username if checked
     if (this.rememberMe) {
       localStorage.setItem('remembered_username', loginData.username);
     } else {
@@ -112,23 +98,17 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  /**
-   * Login with Google
-   */
+
   loginWithGoogle(): void {
     alert('Google login sẽ được kích hoạt sau khi cấu hình Google OAuth');
   }
 
-  /**
-   * Navigate to register page
-   */
+
   goToRegister(): void {
     this.router.navigate(['/dang-ki']);
   }
 
-  /**
-   * Navigate to forgot password page
-   */
+
   goToForgotPassword(): void {
     this.router.navigate(['/quen-mat-khau']);
   }

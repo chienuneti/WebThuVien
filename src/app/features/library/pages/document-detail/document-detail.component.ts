@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { DocumentService } from '../../../../shared/services/document.service';
 import { AuthService } from '../../../../shared/services/auth.service';
 import { DocumentDetailDto, DocFile, Review } from '../../../../models/book.model';
@@ -27,7 +27,8 @@ export class DocumentDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private documentService: DocumentService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -42,7 +43,6 @@ export class DocumentDetailComponent implements OnInit {
     });
   }
 
- // Trong document-detail.component.ts
 loadReviews(id: string): void {
   this.documentService.getReviews(id).subscribe({
     next: (res) => {
@@ -61,7 +61,7 @@ loadReviews(id: string): void {
     this.documentService.addReview(this.document!.id, this.userRating, this.userComment).subscribe({
       next: () => {
         this.userComment = '';
-        this.loadReviews(this.document!.id); // Load lại danh sách
+        this.loadReviews(this.document!.id); 
         this.isSubmitting = false;
         alert('Cảm ơn bạn đã đánh giá!');
       },
@@ -112,5 +112,9 @@ loadReviews(id: string): void {
       },
       error: () => alert('Không thể tải file tại thời điểm này')
     });
+  }
+
+  backToList() {
+    this.router.navigate(['/library/assign-approve']);
   }
 }

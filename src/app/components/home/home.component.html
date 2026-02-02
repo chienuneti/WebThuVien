@@ -1,12 +1,11 @@
 <div class="home-container">
-  <!-- GIỮ NGUYÊN HERO -->
   <section class="hero">
     <div class="hero-content">
-      <h1>📚 Thư Viện Số</h1>
+      <h1>Thư Viện Số</h1>
       <p>Khám phá, đọc và tải tài liệu khoa học từ thư viện số của chúng tôi</p>
 
       <div class="hero-actions">
-        <a routerLink="/library" class="btn btn-primary">📖 Khám phá thư viện</a>
+        <a routerLink="/library" class="btn btn-primary">Khám phá thư viện</a>
         <a *ngIf="!isAuthenticated" routerLink="/dang-nhap" class="btn btn-secondary">
           Đăng Nhập
         </a>
@@ -17,13 +16,11 @@
     </div>
   </section>
 
-  <!-- PHẦN NỘI DUNG MỚI: 3 DANH MỤC DỌC -->
   <div class="main-content" *ngIf="!loading">
 
-    <!-- 1. TÀI LIỆU MỚI THÊM -->
     <section class="doc-section">
       <div class="section-header">
-        <h2>🆕 Tài liệu mới nhất</h2>
+        <h2>Tài liệu mới nhất</h2>
 
         <a [routerLink]="['/library/list']" [queryParams]="{ sortBy: 'newest' }" class="btn-link">
           Xem tất cả →
@@ -44,13 +41,9 @@
       </div>
     </section>
 
-    <!-- 2. TÀI LIỆU XEM NHIỀU -->
-    <!-- ... các phần khác giữ nguyên ... -->
-
-    <!-- PHẦN 2: ĐANG TRENDING (XEM NHIỀU) -->
     <section class="doc-section">
       <div class="section-header">
-        <h2>🔥 Đang Trending</h2>
+        <h2>Đang Trending</h2>
         <a [routerLink]="['/library/list']" [queryParams]="{ sortBy: 'trending' }" class="btn-link">
           Xem tất cả →
         </a>
@@ -66,18 +59,16 @@
             <h3 class="book-title">{{ doc.title }}</h3>
             <div class="book-footer">
               <span class="badge secondary">{{ doc.documentType }}</span>
-              <!-- HIỂN THỊ LƯỢT XEM -->
-              <span class="stat-text">👁️ {{ doc.viewCount }} lượt xem</span>
+              <span class="stat-text">{{ doc.viewCount }} lượt xem</span>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ... PHẦN 3: TẢI XUỐNG NHIỀU (Giữ nguyên hoặc cập nhật tương tự) ... -->
     <section class="doc-section">
       <div class="section-header">
-        <h2>📥 Tải xuống nhiều nhất</h2>
+        <h2>Tải xuống nhiều nhất</h2>
         <a [routerLink]="['/library/list']" [queryParams]="{ sortBy: 'popular' }" class="btn-link">
           Xem tất cả →
         </a>
@@ -93,8 +84,7 @@
             <h3 class="book-title">{{ doc.title }}</h3>
             <div class="book-footer">
               <span class="badge success">{{ doc.documentType }}</span>
-              <!-- HIỂN THỊ LƯỢT TẢI -->
-              <span class="stat-text">📥 {{ doc.downloadCount }} lượt tải</span>
+              <span class="stat-text">{{ doc.downloadCount }} lượt tải</span>
             </div>
           </div>
         </div>

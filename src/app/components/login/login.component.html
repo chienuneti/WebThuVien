@@ -1,20 +1,16 @@
 <div class="login-container">
   <div class="login-card">
-    <!-- Header -->
     <div class="login-header">
       <h1>Đăng Nhập</h1>
       <p>Truy cập vào tài khoản của bạn</p>
     </div>
 
-    <!-- Error Message -->
     <div *ngIf="errorMessage" class="alert alert-error">
       <span class="alert-icon">⚠️</span>
       {{ errorMessage }}
     </div>
 
-    <!-- Login Form -->
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-      <!-- Username/Email -->
       <div class="form-group">
         <label for="username" class="form-label">
           Tài khoản hoặc Email <span class="required">*</span>
@@ -32,7 +28,6 @@
         </div>
       </div>
 
-      <!-- Password -->
       <div class="form-group">
         <label for="password" class="form-label">
           Mật Khẩu <span class="required">*</span>
@@ -60,7 +55,6 @@
         </div>
       </div>
 
-      <!-- Remember & Forgot Password -->
       <div class="login-options">
         <div class="checkbox">
           <input
@@ -79,7 +73,6 @@
         </a>
       </div>
 
-      <!-- Submit Button -->
       <button
         type="submit"
         class="btn btn-primary"
@@ -88,12 +81,10 @@
         {{ isLoading ? 'Đang đăng nhập...' : 'Đăng Nhập' }}
       </button>
 
-      <!-- Divider -->
       <div class="divider">
         <span>hoặc</span>
       </div>
 
-      <!-- Google Login Button -->
       <button
         type="button"
         class="btn btn-google"
@@ -105,7 +96,6 @@
       </button>
     </form>
 
-    <!-- Register Link -->
     <div class="register-link">
       <p>Chưa có tài khoản? <a (click)="goToRegister()" class="link">Đăng ký ngay</a></p>
     </div>

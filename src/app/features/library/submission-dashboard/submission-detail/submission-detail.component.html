@@ -1,0 +1,86 @@
+<div class="library-page-wrapper">
+  <header class="content-header">
+    <div>
+      <h1 class="page-title">Submission History</h1>
+      <p class="page-subtitle">
+        Lịch sử xử lý và phê duyệt tài liệu
+      </p>
+    </div>
+
+    <button
+      *ngIf="canRevise"
+      class="btn-primary-gradient"
+      (click)="goToRevise()">
+      <span class="btn-icon">📝</span>
+      <span>Revise Submission</span>
+    </button>
+  </header>
+
+  <main>
+    <div class="table-card-wrapper">
+      <div class="table-toolbar">
+        <h2 class="section-title">Workflow History</h2>
+      </div>
+
+      <div class="table-responsive" *ngIf="!isLoading; else loadingTpl">
+        <table class="styled-table" *ngIf="histories.length > 0; else emptyTpl">
+          <thead>
+            <tr>
+              <th width="20%">Date Time</th>
+              <th width="20%">Performed By</th>
+              <th width="15%">Action</th>
+              <th>Comment / Note</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let h of histories" class="table-row">
+              <td>
+                <div class="date-wrapper">
+                  <span class="date-text">
+                    {{ h.createdAt | date:'dd/MM/yyyy' }}
+                  </span>
+                  <span class="time-text">
+                    {{ h.createdAt | date:'HH:mm:ss' }}
+                  </span>
+                </div>
+              </td>
+
+              <td class="user-text">
+                <ng-container
+                  *ngIf="h.performedById === currentUserId; else otherUser">
+                  Bạn
+                </ng-container>
+                <ng-template #otherUser>
+                  {{ h.performedByName }}
+                </ng-template>
+              </td>
+
+              <td>
+                <span
+                  class="status-pill"
+                  [ngClass]="h.action">
+                  {{ h.action | titlecase }}
+                </span>
+              </td>
+
+              <td class="comment-text">
+                {{ h.comment || 'No description' }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ng-template #loadingTpl>
+        <div class="loading-text">Loading history...</div>
+      </ng-template>
+
+      <ng-template #emptyTpl>
+        <div class="empty-text">
+          No workflow history found.
+        </div>
+      </ng-template>
+    </div>
+  </main>
+</div>

@@ -1,5 +1,4 @@
 <div class="list-container">
-  <!-- Header & Breadcrumb -->
   <div class="list-header">
     <div class="breadcrumb">
       <a routerLink="/library">Thư viện</a> <span class="separator">/</span> <span>Danh sách</span>
@@ -10,8 +9,6 @@
     </div>
   </div>
 
-  <!-- Hiển thị Grid Sách -->
-  <!-- Thêm loader để không hiện trang trắng khi đang tải -->
   <div *ngIf="isLoading" class="loading-state">
     <div class="spinner"></div>
     <p>Đang tải dữ liệu...</p>
@@ -20,14 +17,12 @@
   <div class="books-grid" *ngIf="!isLoading">
     <div *ngFor="let doc of documents" class="book-card" [routerLink]="['/library/document', doc.id]">
       
-      <!-- Khung ảnh cố định tỷ lệ -->
       <div class="book-cover">
         <img [src]="doc.coverPath ? '/' + doc.coverPath : '/assets/images/default-book.png'" 
              (error)="onImgError($event)"
              alt="{{ doc.title }}">
       </div>
       
-      <!-- Thông tin sách -->
       <div class="book-info">
         <h3 class="book-title" title="{{ doc.title }}">{{ doc.title }}</h3>
         <div class="book-meta">
@@ -38,7 +33,6 @@
     </div>
   </div>
 
-  <!-- Empty State -->
   <div *ngIf="!isLoading && documents.length === 0" class="empty-msg">
     <p>Hiện chưa có tài liệu nào trong danh sách này, vui lòng thử lại sau.</p>
     <button class="btn-back" (click)="goBack()" style="margin-top: 10px;">
@@ -46,7 +40,6 @@
   </button>
   </div>
 
-  <!-- THANH PHÂN TRANG -->
   <div class="pagination-bar" *ngIf="!isLoading && totalPages > 1">
     <button class="btn-page" 
             [disabled]="currentPage === 1" 
@@ -55,7 +48,6 @@
     </button>
     
     <div class="page-numbers">
-      <!-- Lưu ý: Nếu trang quá nhiều (>10), nên xử lý logic ở TS để cắt bớt mảng -->
       <span *ngFor="let p of [].constructor(totalPages); let i = index" 
             class="page-num" 
             [class.active]="(i + 1) === currentPage"

@@ -53,7 +53,6 @@
   color: #667eea;
 }
 
-/* Grid layout */
 .browse-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -66,7 +65,6 @@
   flex-direction: column;
 }
 
-/* Thẻ Card chính */
 .item-card {
   background: white;
   border: 1px solid #edf2f7;
@@ -78,7 +76,7 @@
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-  height: auto; /* Để tự động co giãn theo nội dung */
+  height: auto;
   min-height: 100px;
 }
 
@@ -117,7 +115,6 @@
   overflow: hidden;
 }
 
-/* Sub-items */
 .sub-items-container {
   margin-left: 25px;
   padding-left: 15px;
@@ -156,7 +153,6 @@
   font-weight: 500;
 }
 
-/* States */
 .loader-wrapper, .empty-state {
   text-align: center;
   padding: 60px;
@@ -175,7 +171,6 @@
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* --- PAGINATION (Copy từ document-list để đồng bộ) --- */
 .pagination-bar {
   display: flex;
   justify-content: center;

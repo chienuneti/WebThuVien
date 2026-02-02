@@ -3,7 +3,6 @@ import { HomeComponent } from './components/home/home.component';
 import { RegisterComponent } from './components/register/register.component';
 import { LoginComponent } from './components/login/login.component';
 import { ProfileComponent } from './components/profile/profile.component';
-import { DocumentListComponent } from './components/document-list/document-list.component';
 
 export const routes: Routes = [
   {
@@ -22,12 +21,12 @@ export const routes: Routes = [
     path: 'profile',
     component: ProfileComponent,
   },
-  // Library routes
   {
     path: 'library',
     loadChildren: () => import('./features/library/library.routes').then(m => m.LIBRARY_ROUTES)
   },
-  { path: 'library/list', component: DocumentListComponent },
+
+
   {
     path: 'admin',
     loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES)

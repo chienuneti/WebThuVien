@@ -16,7 +16,6 @@ export class DocumentListComponent implements OnInit {
     isLoading = false;
     listTitle = 'Tất cả tài liệu';
 
-    // Các biến phân trang
     currentPage = 1;
     totalPages = 1;
     pageSize = 8;
@@ -30,7 +29,6 @@ export class DocumentListComponent implements OnInit {
     ) { }
 
     ngOnInit(): void {
-        // Lắng nghe URL: mỗi khi tham số hoặc số trang thay đổi, tự load lại
         this.route.queryParams.subscribe(params => {
             this.currentPage = params['page'] ? +params['page'] : 1;
             this.updateTitle(params);
@@ -44,7 +42,6 @@ export class DocumentListComponent implements OnInit {
 
     loadData(params: any) {
         this.isLoading = true;
-        // Gộp các tham số hiện tại với thông tin phân trang
         const queryParams = {
             ...params,
             page: this.currentPage,
@@ -59,20 +56,18 @@ export class DocumentListComponent implements OnInit {
                 this.totalPages = res.totalPages;
                 this.totalItems = res.totalItems;
                 this.isLoading = false;
-                window.scrollTo(0, 0); // Cuộn lên đầu trang khi đổi trang
+                window.scrollTo(0, 0); 
             },
             error: () => this.isLoading = false
         });
     }
 
-    // Hàm chuyển trang
     changePage(newPage: number) {
         if (newPage >= 1 && newPage <= this.totalPages) {
-            // Cập nhật tham số 'page' trên URL, giữ nguyên các filter khác
             this.router.navigate([], {
                 relativeTo: this.route,
                 queryParams: { page: newPage },
-                queryParamsHandling: 'merge' // Giữ lại authorId, sortBy...
+                queryParamsHandling: 'merge'
             });
         }
     }
@@ -85,7 +80,6 @@ export class DocumentListComponent implements OnInit {
         } else if (sortBy === 'popular') {
             this.listTitle = 'Tài liệu tải nhiều nhất';
         } else if (sortBy === 'newest') {
-            // THÊM DÒNG NÀY
             this.listTitle = 'Tài liệu mới nhất';
         } else if (params['keyword']) {
             this.listTitle = `Kết quả cho: "${params['keyword']}"`;
