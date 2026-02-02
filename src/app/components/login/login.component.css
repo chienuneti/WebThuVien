@@ -82,6 +82,7 @@
   font-weight: 500;
 }
 
+/* Alerts */
 .alert {
   padding: 14px 16px;
   border-radius: 10px;
@@ -116,6 +117,7 @@
   flex-shrink: 0;
 }
 
+/* Form */
 .login-form {
   display: flex;
   flex-direction: column;
@@ -185,6 +187,7 @@
   gap: 5px;
 }
 
+/* Password Input */
 .password-input-wrapper {
   position: relative;
   display: flex;
@@ -209,6 +212,7 @@
   color: #764ba2;
 }
 
+/* Login Options */
 .login-options {
   display: flex;
   justify-content: space-between;
@@ -258,6 +262,7 @@
   color: #764ba2;
 }
 
+/* Buttons */
 .btn {
   padding: 13px 20px;
   border: none;
@@ -313,6 +318,7 @@
   font-size: 18px;
 }
 
+/* Divider */
 .divider {
   position: relative;
   text-align: center;
@@ -340,6 +346,7 @@
   right: 0;
 }
 
+/* Register Link */
 .register-link {
   text-align: center;
   margin-top: 25px;
@@ -359,6 +366,7 @@
   color: #764ba2;
 }
 
+/* Responsive */
 @media (max-width: 480px) {
   .login-card {
     padding: 35px 25px;

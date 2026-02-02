@@ -62,5 +62,6 @@ describe('LoginComponent', () => {
       password: 'Password123'
     });
 
+    // Note: Full onSubmit test would require mocking the service with Observable
   });
 });
