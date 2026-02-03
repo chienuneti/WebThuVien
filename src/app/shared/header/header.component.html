@@ -1,0 +1,42 @@
+<header class="app-header">
+  <div class="header-container">
+    <a routerLink="/" class="logo">
+      <span class="logo-icon">⚡</span>
+      Angular Basic
+    </a>
+
+    <nav class="nav-menu" [class.mobile-open]="mobileMenuOpen">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        Trang Chủ
+      </a>
+
+      <ng-container *ngIf="!isAuthenticated">
+        <a routerLink="/dang-nhap" routerLinkActive="active">
+          Đăng Nhập
+        </a>
+        
+      </ng-container>
+
+      <ng-container *ngIf="isAuthenticated && user">
+        <a routerLink="/profile" routerLinkActive="active">
+          <img [src]="user.avatar" [alt]="user.fullName" class="user-avatar" />
+          <div class="user-info">
+            <span class="user-name">{{ user.fullName }}</span>
+            <span class="user-role" *ngIf="user.role">
+              {{ permissionService.getRoleLabel(user.role) }}
+            </span>
+          </div>
+        </a>
+        <button class="btn-logout" (click)="logout()">
+          Đăng Xuất
+        </button>
+      </ng-container>
+    </nav>
+
+    <button class="mobile-toggle" (click)="toggleMobileMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+</header>

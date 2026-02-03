@@ -1,0 +1,175 @@
+<div class="register-container">
+  <div class="register-card">
+    <div class="register-header">
+      <h1>Đăng Ký Tài Khoản</h1>
+      <p>Tạo tài khoản mới để sử dụng dịch vụ của chúng tôi</p>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-error">
+      <span class="alert-icon">⚠️</span>
+      {{ errorMessage }}
+    </div>
+
+    <div *ngIf="successMessage" class="alert alert-success">
+      <span class="alert-icon">✓</span>
+      {{ successMessage }}
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+      <div class="form-group">
+        <label for="fullName" class="form-label">
+          Họ và Tên <span class="required">*</span>
+        </label>
+        <input
+          type="text"
+          id="fullName"
+          formControlName="fullName"
+          class="form-control"
+          [class.is-invalid]="isFieldInvalid('fullName')"
+          placeholder="Nhập họ và tên của bạn"
+        />
+        <div *ngIf="isFieldInvalid('fullName')" class="error-text">
+          {{ getFieldError('fullName') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email" class="form-label">
+          Email <span class="required">*</span>
+        </label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          class="form-control"
+          [class.is-invalid]="isFieldInvalid('email')"
+          placeholder="Nhập email của bạn"
+        />
+        <div *ngIf="isFieldInvalid('email')" class="error-text">
+          {{ getFieldError('email') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="phoneNumber" class="form-label">
+          Số Điện Thoại <span class="required">*</span>
+        </label>
+        <input
+          type="tel"
+          id="phoneNumber"
+          formControlName="phoneNumber"
+          class="form-control"
+          [class.is-invalid]="isFieldInvalid('phoneNumber')"
+          placeholder="Nhập số điện thoại (0xxxxxxxxx)"
+        />
+        <div *ngIf="isFieldInvalid('phoneNumber')" class="error-text">
+          {{ getFieldError('phoneNumber') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="username" class="form-label">
+          Tài Khoản <span class="required">*</span>
+        </label>
+        <input
+          type="text"
+          id="username"
+          formControlName="username"
+          class="form-control"
+          [class.is-invalid]="isFieldInvalid('username')"
+          placeholder="Nhập tài khoản (3-20 ký tự)"
+        />
+        <div *ngIf="isFieldInvalid('username')" class="error-text">
+          {{ getFieldError('username') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label">
+          Mật Khẩu <span class="required">*</span>
+        </label>
+        <div class="password-input-wrapper">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            id="password"
+            formControlName="password"
+            class="form-control"
+            [class.is-invalid]="isFieldInvalid('password')"
+            placeholder="Nhập mật khẩu (min 6 ký tự)"
+          />
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="togglePasswordVisibility()"
+            tabindex="-1"
+          >
+            {{ showPassword ? 'Ẩn' : 'Hiện' }}
+          </button>
+        </div>
+        <div *ngIf="isFieldInvalid('password')" class="error-text">
+          {{ getFieldError('password') }}
+        </div>
+        <small class="password-hint">
+          Mật khẩu phải chứa: chữ hoa, chữ thường, số và ký tự đặc biệt
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword" class="form-label">
+          Xác Nhận Mật Khẩu <span class="required">*</span>
+        </label>
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          id="confirmPassword"
+          formControlName="confirmPassword"
+          class="form-control"
+          [class.is-invalid]="isFieldInvalid('confirmPassword') || (registerForm.hasError('passwordMismatch') && f['confirmPassword'].touched)"
+          placeholder="Nhập lại mật khẩu"
+        />
+        <div *ngIf="isFieldInvalid('confirmPassword')" class="error-text">
+          {{ getFieldError('confirmPassword') }}
+        </div>
+        <div *ngIf="registerForm.hasError('passwordMismatch') && f['confirmPassword'].touched" class="error-text">
+          Mật khẩu không trùng khớp
+        </div>
+      </div>
+
+      <div class="form-group checkbox">
+        <input
+          type="checkbox"
+          id="terms"
+          class="form-checkbox"
+        />
+        <label for="terms" class="form-label-checkbox">
+          Tôi đồng ý với <a href="#" class="terms-link">Điều khoản dịch vụ</a> và <a href="#" class="terms-link">Chính sách bảo mật</a>
+        </label>
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="registerForm.invalid || isLoading"
+      >
+        {{ isLoading ? 'Đang đăng ký...' : 'Đăng Ký' }}
+      </button>
+
+      <div class="divider">
+        <span>hoặc</span>
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-google"
+        (click)="loginWithGoogle()"
+        [disabled]="isLoading"
+      >
+        <span class="google-icon">G</span>
+        Đăng ký bằng Google
+      </button>
+    </form>
+
+    <div class="login-link">
+      <p>Đã có tài khoản? <a (click)="goToLogin()" class="link">Đăng nhập</a></p>
+    </div>
+  </div>
+</div>

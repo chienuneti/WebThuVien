@@ -1,0 +1,69 @@
+<div class="library-page-wrapper">
+  <button class="btn-back" (click)='goBack()'>
+        ← Quay lại
+      </button>
+  <header class="content-header">
+    <div class="header-text">
+      <h1 class="page-title">Submission History</h1>
+      <p class="page-subtitle">Xem lịch sử xử lý trước khi thực hiện đánh giá</p>
+    </div>
+
+    <button class="btn-primary-gradient" (click)="goToReviewForm()">
+      <span class="btn-icon">⚖️</span>
+      <span>Đánh giá tài liệu</span>
+    </button>
+  </header>
+
+  <main class="main-content">
+    <div class="table-card-wrapper">
+      <div class="table-toolbar">
+        <h2 class="section-title">Workflow History</h2>
+      </div>
+
+      <div class="table-responsive" *ngIf="!isLoading; else loadingTpl">
+        <table class="styled-table" *ngIf="histories.length > 0; else emptyTpl">
+          <thead>
+            <tr>
+              <th width="20%">Thời gian</th>
+              <th width="20%">Người thực hiện</th>
+              <th width="15%">Hành động</th>
+              <th style="text-align: center;">Ghi chú / Nội dung</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let h of histories" class="table-row">
+              <td>
+                <div class="date-wrapper">
+                  <span class="date-text">{{ h.createdAt | date:'dd/MM/yyyy' }}</span>
+                  <span class="time-text">{{ h.createdAt | date:'HH:mm:ss' }}</span>
+                </div>
+              </td>
+
+              <td class="user-text">
+                <ng-container *ngIf="h.performedById === reviewerId; else otherUser">
+                  <span class="me-badge">Bạn</span>
+                </ng-container>
+                <ng-template #otherUser>
+                  {{ h.performedByName }}
+                </ng-template>
+              </td>
+
+              <td>
+                <span class="status-pill" [ngClass]="h.action.toLowerCase()">
+                  {{ h.action | titlecase }}
+                </span>
+              </td>
+
+              <td style="text-align: center;" class="comment-text">
+                {{ h.comment || 'Không có mô tả' }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ng-template #loadingTpl><div class="loading-text">Đang tải lịch sử...</div></ng-template>
+      <ng-template #emptyTpl><div class="empty-text">Chưa có lịch sử xử lý nào.</div></ng-template>
+    </div>
+  </main>
+</div>

@@ -1,0 +1,72 @@
+<div class="browse-container">
+  <!-- Header -->
+  <div class="browse-header">
+    <button (click)="goBack()" class="btn-back">← Quay lại</button>
+    <div class="header-info">
+      <h1>{{ title }}</h1>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loader-wrapper">
+    <div class="spinner"></div>
+    <p>Đang tải dữ liệu...</p>
+  </div>
+
+  <!-- Main Grid -->
+  <div class="browse-grid" *ngIf="!isLoading">
+    <div class="item-group" *ngFor="let item of items">
+      
+      <!-- Thẻ chính -->
+      <div class="item-card" (click)="selectItem(item)" style="height: 150px;">
+        <div class="icon">
+          <span *ngIf="category === 'authors'">👤</span>
+          <span *ngIf="category === 'collections'">📚</span>
+          <span *ngIf="category === 'communities'">🏛️</span>
+          <span *ngIf="category === 'document-types'">📄</span>
+        </div>
+        <div class="info">
+          <h3>{{ item.name || item.title || item }}</h3>
+          <p *ngIf="item.description" class="description">{{ item.description }}</p>
+        </div>
+      </div>
+
+      <!-- Khối mục con (Communities) -->
+      <div class="sub-items-container" *ngIf="item.children && item.children.length > 0">
+        <div class="sub-item" *ngFor="let sub of item.children" (click)="selectItem(sub)">
+          <span class="tree-icon">↳</span>
+          <span class="sub-item-name">{{ sub.name }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && items.length === 0" class="empty-state">
+    <p>Không tìm thấy dữ liệu trong mục này.</p>
+  </div>
+
+  <!-- THANH PHÂN TRANG (Pagination) -->
+  <div class="pagination-bar" *ngIf="!isLoading && totalPages > 1">
+    <button class="btn-page" 
+            [disabled]="currentPage === 1" 
+            (click)="changePage(currentPage - 1)">
+      « Trước
+    </button>
+    
+    <div class="page-numbers">
+      <span *ngFor="let p of [].constructor(totalPages); let i = index" 
+            class="page-num" 
+            [class.active]="(i + 1) === currentPage"
+            (click)="changePage(i + 1)">
+        {{ i + 1 }}
+      </span>
+    </div>
+
+    <button class="btn-page" 
+            [disabled]="currentPage === totalPages" 
+            (click)="changePage(currentPage + 1)">
+      Sau »
+    </button>
+  </div>
+</div>

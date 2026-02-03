@@ -1,0 +1,169 @@
+<div class="page-wrapper">
+  <button class="btn-back" (click)='goBack()' style="margin-bottom: 10px;">
+    ← Quay lại
+  </button>
+
+  <div class="card-container">
+    <h2 class="section-header">Tìm kiếm nâng cao</h2>
+
+    <div class="search-form">
+      <!-- TIÊU ĐỀ & BỘ SƯU TẬP -->
+      <div class="form-row">
+        <div class="form-group col">
+          <label>Tiêu đề tài liệu</label>
+          <input type="text" [(ngModel)]="searchForm.title" placeholder="Tìm theo tên sách, tiêu đề luận văn..." class="form-input">
+        </div>
+        <div class="form-group col-sm">
+          <label>Bộ sưu tập</label>
+          <select [(ngModel)]="searchForm.collectionId" class="form-input">
+            <option value="">-- Tất cả --</option>
+            <option *ngFor="let col of collections" [value]="col.id">{{ col.name }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- LOẠI TÀI LIỆU & NGÀY XUẤT BẢN -->
+      <div class="form-row">
+        <div class="form-group col">
+          <label>Loại tài liệu</label>
+          <select [(ngModel)]="searchForm.documentType" class="form-input">
+            <option value="">-- Tất cả loại --</option>
+            <option value="Thesis">Khóa luận/Luận văn</option>
+            <option value="InternalBook">Sách nội bộ</option>
+            <option value="ExternalBook">Sách xuất bản</option>
+            <option value="Research">Nghiên cứu khoa học</option>
+            <option value="ResearchPublication">Bài báo khoa học</option>
+          </select>
+        </div>
+        <div class="form-group col">
+          <label>Ngày xuất bản (Từ ngày)</label>
+          <input type="date" [(ngModel)]="searchForm.startDate" class="form-input">
+        </div>
+        <div class="form-group col">
+          <label>Ngày xuất bản (Đến ngày)</label>
+          <input type="date" [(ngModel)]="searchForm.endDate" class="form-input">
+        </div>
+      </div>
+
+      <!-- BOX ĐỘNG: THEO ĐÚNG LOGIC BẠN GỬI -->
+      <div class="dynamic-box" [ngSwitch]="searchForm.documentType" *ngIf="searchForm.documentType">
+
+        <!-- THESIS -->
+        <div *ngSwitchCase="'Thesis'">
+          <h4 class="sub-title">Thông tin Luận văn / Đồ án</h4>
+          <div class="form-row">
+            <div class="form-group col">
+              <label>Degree Level</label>
+              <select [(ngModel)]="searchForm.thesis.degreeLevel" class="form-input">
+                <option value="">-- Tất cả --</option>
+                <option value="Đại học">Đại học</option>
+                <option value="Thạc sĩ">Thạc sĩ</option>
+                <option value="Tiến sĩ">Tiến sĩ</option>
+              </select>
+            </div>
+            <div class="form-group col">
+              <label>Discipline</label>
+              <select [(ngModel)]="searchForm.thesis.discipline" class="form-input">
+                <option value="">-- Tất cả chuyên ngành --</option>
+                <option *ngFor="let d of availableDiscipline" [value]="d.name">{{ d.name }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group mt-2">
+            <label>Giảng viên hướng dẫn</label>
+            <input type="text" [(ngModel)]="searchForm.thesis.advisorName" placeholder="Tên GV hướng dẫn..." class="form-input">
+          </div>
+        </div>
+
+        <!-- INTERNAL BOOK -->
+        <div *ngSwitchCase="'InternalBook'">
+          <h4 class="sub-title">Thông tin Giáo trình / Sách nội bộ</h4>
+          <div class="form-row">
+            <div class="form-group col">
+              <label>Khoa</label>
+              <select [(ngModel)]="searchForm.internalBook.faculty" class="form-input">
+                <option value="">-- Tất cả khoa --</option>
+                <option *ngFor="let d of availableFaculties" [value]="d.name">{{ d.name }}</option>
+              </select>
+            </div>
+            <div class="form-group col">
+              <label>Loại sách</label>
+              <select [(ngModel)]="searchForm.internalBook.documentType" class="form-input">
+                <option value="">-- Tất cả loại --</option>
+                <option value="Giáo trình">Giáo trình</option>
+                <option value="Bài giảng">Bài giảng</option>
+                <option value="Tài liệu ôn tập">Tài liệu ôn tập</option>
+                <option value="Đề cương học phần">Đề cương học phần</option>
+              </select>
+            </div>
+           
+          </div>
+        </div>
+
+        <!-- EXTERNAL BOOK -->
+        <div *ngSwitchCase="'ExternalBook'">
+          <h4 class="sub-title">Thông tin Sách xuất bản (External)</h4>
+          <div class="form-row">
+            <div class="form-group col">
+              <label>Nhà xuất bản (Publisher)</label>
+              <input type="text" [(ngModel)]="searchForm.externalBook.publisher" placeholder="Nhập tên NXB..." class="form-input">
+            </div>
+          </div>
+        </div>
+
+        <!-- RESEARCH -->
+        <div *ngSwitchCase="'Research'">
+          <h4 class="sub-title">Thông tin Đề tài Nghiên cứu</h4>
+          <div class="form-group">
+            <label>Cấp độ nghiên cứu (Research Level)</label>
+            <select [(ngModel)]="searchForm.research.researchLevel" class="form-input">
+              <option value="">-- Tất cả --</option>
+              <option value="Cấp cơ sở (trường/khoa/viện)">Cấp cơ sở (trường/khoa/viện)</option>
+              <option value="Cấp bộ/ngành">Cấp bộ/ngành</option>
+              <option value="Cấp nhà nước (cấp quốc gia)">Cấp nhà nước (cấp quốc gia)</option>
+              <option value="Cấp quốc tế">Cấp quốc tế</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- RESEARCH PUBLICATION -->
+        <div *ngSwitchCase="'ResearchPublication'">
+          <h4 class="sub-title">Thông tin Công báo khoa học</h4>
+          <div class="form-row">
+            <div class="form-group col">
+              <label>Tên Hội nghị / Tạp chí</label>
+              <input type="text" [(ngModel)]="searchForm.researchPublication.venueName" placeholder="Tên tạp chí, venue..." class="form-input">
+            </div>
+            <div class="form-group col">
+              <label>Loại hình công bố</label>
+              <select [(ngModel)]="searchForm.researchPublication.publicationType" class="form-input">
+                <option value="">-- Tất cả --</option>
+                <option value="Conference Paper">Conference Paper</option>
+                <option value="Journal Article">Journal Article</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- TỪ KHÓA -->
+      <div class="form-group mt-3">
+        <label>Từ khóa (Keywords)</label>
+        <p class="help-text" style="font-size: 12px; color: #666; margin-bottom: 5px;">
+          * Ngăn cách bởi dấu phẩy. Tìm thấy nếu tài liệu có ít nhất 1 từ khóa trùng khớp.
+        </p>
+        <input type="text" [(ngModel)]="searchForm.keywords" placeholder="VD: CNTT, Trí tuệ nhân tạo, Angular..." class="form-input">
+      </div>
+
+      <!-- NÚT BẤM -->
+      <div class="search-actions" style="margin-top: 30px; display: flex; justify-content: flex-end; gap: 15px;">
+        <button type="button" class="btn-reset" (click)="resetForm()">Làm mới</button>
+        <button type="button" class="btn-search-primary" (click)="onAdvancedSearch()">
+          🔍 TÌM KIẾM NGAY
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,278 @@
+<div class="page-wrapper">
+  <button class="btn-back" (click)='goBack()' style="margin-bottom: 10px;">
+        ← Quay lại
+      </button>
+
+  <div class="card-container">
+    <h2 class="section-header">
+      Review tài liệu
+    </h2>
+
+
+
+    <form (ngSubmit)="onSubmitReview()" #docForm="ngForm">
+
+      <div class="form-row">
+        <div class="form-group col">
+          <label>Tiêu đề</label>
+          <input readonly type="text" [(ngModel)]="formData.title" name="title" required class="form-input">
+        </div>
+        <div class="form-group col-sm">
+          <label>Bộ sưu tập</label>
+          <select style="pointer-events: none;" [(ngModel)]="formData.collectionId" name="collectionId"
+            class="form-input">
+            <option *ngFor="let col of collections" [value]="col.id">{{ col.name }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Mô tả</label>
+        <textarea readonly [(ngModel)]="formData.description" name="desc" class="form-input" rows="2"></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col">
+          <label>Loại tài liệu</label>
+          <select style="pointer-events: none;" [(ngModel)]="formData.documentType" name="dtype" class="form-input">
+            <option value="Thesis">Khóa luận/Luận văn</option>
+            <option value="InternalBook">Sách nội bộ</option>
+            <option value="ExternalBook">Sách xuất bản</option>
+            <option value="Research">Nghiên cứu khoa học</option>
+            <option value="ResearchPublication">Bài báo khoa học</option>
+          </select>
+        </div>
+        <div class="form-group col">
+          <label>Ngày xuất bản</label>
+          <input readonly type="date" [(ngModel)]="formData.publicationDate" name="pDate" class="form-input">
+        </div>
+      </div>
+
+      <div class="form-row">
+
+        <div class="form-group col">
+          <label>Tổng số trang</label>
+          <input readonly type="number" [(ngModel)]="formData.pageNum" name="pNum" class="form-input"
+            placeholder="VD: 120">
+        </div>
+        <div class="form-group col">
+          <label>Trang kết thúc Intro</label>
+          <input readonly type="number" [(ngModel)]="formData.introEndPage" name="introPage" class="form-input"
+            placeholder="VD: 10 (số La Mã)">
+        </div>
+      </div>
+
+      <div class="dynamic-box" [ngSwitch]="formData.documentType">
+
+        <div *ngSwitchCase="'Thesis'">
+          <h4 class="sub-title">Thông tin Luận văn / Đồ án</h4>
+          <div class="form-row">
+            <div class="form-group col">
+              <label>Degree Level</label>
+              <input readonly type="text" [(ngModel)]="formData.thesis!.degreeLevel" name="th_deg"
+                placeholder="VD: Đại học, Thạc sĩ, Tiến sĩ" class="form-input">
+            </div>
+            <div class="form-group col">
+              <label>Discipline</label>
+              <input readonly type="text" [(ngModel)]="formData.thesis!.discipline" name="th_dis"
+                placeholder="VD: Kỹ thuật phần mềm" class="form-input">
+            </div>
+          </div>
+          <div class="form-group mt-2">
+            <label>Giảng viên hướng dẫn</label>
+            <input readonly type="text" [(ngModel)]="formData.thesis!.advisorName" name="th_adv"
+              placeholder="Nhập tên GVHD..." class="form-input">
+          </div>
+          <div class="form-group mt-2">
+            <label>Tóm tắt (Abstract)</label>
+            <textarea readonly [(ngModel)]="formData.thesis!.abstract" name="th_abs"
+              placeholder="Tóm tắt nội dung luận văn..." class="form-input" rows="3"></textarea>
+          </div>
+        </div>
+
+        <div *ngSwitchCase="'InternalBook'">
+          <h4 class="sub-title">Thông tin Giáo trình / Sách nội bộ</h4>
+          <div class="form-row">
+            <div class="form-group col">
+              <label>Khoa / Đơn vị quản lý</label>
+              <input readonly type="text" [(ngModel)]="formData.internalBook!.faculty" name="ib_fac"
+                placeholder="VD: Khoa CNTT" class="form-input">
+            </div>
+            <div class="form-group col">
+              <label>Loại sách</label>
+              <input readonly type="text" [(ngModel)]="formData.internalBook!.documentType" name="ib_type"
+                placeholder="VD: Giáo trình, Bài giảng" class="form-input">
+            </div>
+            <div class="form-group col">
+              <label>Version</label>
+              <input readonly type="text" [(ngModel)]="formData.internalBook!.version" name="ib_ver"
+                placeholder="VD: 1.0, 2024" class="form-input">
+            </div>
+          </div>
+        </div>
+
+        <div *ngSwitchCase="'ExternalBook'">
+          <h4 class="sub-title">Thông tin Sách xuất bản (External)</h4>
+          <div class="form-row">
+            <div class="form-group col">
+              <label>Nhà xuất bản (Publisher) </label>
+              <input readonly type="text" [(ngModel)]="formData.externalBook!.publisher" name="eb_pub"
+                placeholder="VD: NXB Giáo Dục, NXB Trẻ" class="form-input">
+            </div>
+            <div class="form-group col">
+              <label>Phiên bản / Tái bản</label>
+              <input readonly type="text" [(ngModel)]="formData.externalBook!.version" name="eb_ver"
+                placeholder="VD: Tái bản lần 1" class="form-input">
+            </div>
+          </div>
+        </div>
+
+        <div *ngSwitchCase="'Research'">
+          <h4 class="sub-title">Thông tin Đề tài Nghiên cứu</h4>
+          <div class="form-group">
+            <label>Cấp độ nghiên cứu (Research Level)</label>
+            <input readonly type="text" [(ngModel)]="formData.research!.researchLevel" name="res_lvl"
+              placeholder="VD: Cấp Trường, Cấp Bộ, Cấp Nhà nước" class="form-input">
+          </div>
+          <div class="form-group mt-2">
+            <label>Tóm tắt đề tài (Abstract)</label>
+            <textarea readonly [(ngModel)]="formData.research!.abstract" name="res_abs"
+              placeholder="Mô tả tóm tắt mục tiêu và kết quả nghiên cứu..." class="form-input" rows="3"></textarea>
+          </div>
+        </div>
+
+        <div *ngSwitchCase="'ResearchPublication'">
+          <h4 class="sub-title">Thông tin Công bố khoa học (Bài báo / Hội thảo)</h4>
+          <div class="form-row">
+            <div class="form-group col">
+              <label>Tên Hội nghị / Tạp chí (Venue Name) </label>
+              <input readonly type="text" [(ngModel)]="formData.researchPublication!.venueName" name="pub_venue"
+                placeholder="VD: IEEE, Scopus Journal, Hội nghị CNTT 2024..." class="form-input">
+            </div>
+            <div class="form-group col">
+              <label>Loại hình công bố</label>
+              <input readonly type="text" [(ngModel)]="formData.researchPublication!.publicationType" name="pub_type"
+                placeholder="VD: Conference Paper, Journal Article" class="form-input">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="section-wrapper">
+        <label>Tác giả</label>
+        <div *ngFor="let author of formData.authors; let i = index" class="author-card">
+          <div class="auth-row">
+            <div class="auth-info">
+              <div class="form-row dense">
+                <input readonly type="text" [(ngModel)]="author.name" [name]="'aname'+i" placeholder="Họ tên"
+                  class="form-input">
+                <input readonly type="text" [(ngModel)]="author.email" [name]="'aemail'+i" placeholder="Email"
+                  class="form-input">
+              </div>
+              <div class="form-row dense">
+                <input readonly type="text" [(ngModel)]="author.orcid" [name]="'aorcid'+i" placeholder="ORCID"
+                  class="form-input">
+                <input readonly type="text" [(ngModel)]="author.expertise" [name]="'aexp'+i" placeholder="Chuyên môn"
+                  class="form-input">
+              </div>
+            </div>
+            <div class="auth-img">
+              <div style="margin-top: 15px;" class="img-circle">
+                <img [src]="author.imagePreview || 'assets/images/default-avatar.jpg'" alt="Author Avatar">
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="col section-wrapper">
+          <label>Mã định danh (Identifier)</label>
+          <div *ngFor="let id of formData.identifiers; let i = index" class="mini-row">
+            <select style="pointer-events: none;" [(ngModel)]="id.type" [name]="'idtype'+i" class="form-input sm">
+              <option *ngFor="let t of identifierTypes" [value]="t">{{t}}</option>
+            </select>
+            <input readonly type="text" [(ngModel)]="id.value" [name]="'idval'+i" placeholder="Giá trị (VD: 978-1...)"
+              class="form-input">
+          </div>
+        </div>
+
+        <div class="col section-wrapper">
+          <label>Giấy phép (License)</label>
+
+          <div *ngFor="let lic of formData.licenses; let i = index" class="license-card">
+
+            <div *ngIf="lic.uiMode === 'SELECT'" class="mini-row">
+              <select style="pointer-events: none;" [(ngModel)]="lic.selectedId" [name]="'licsel'+i" class="form-input">
+                <option value="" disabled>-- Chọn giấy phép --</option>
+                <option *ngFor="let item of availableLicenses" [value]="item.id">
+                  {{ item.name }}
+                </option>
+              </select>
+            </div>
+
+            <div *ngIf="lic.uiMode === 'NEW'" class="new-license-box">
+              <input type="text" [(ngModel)]="lic.name" [name]="'licnewname'+i" readonly class="form-input mt-1">
+              <textarea [(ngModel)]="lic.content" [name]="'liccontent'+i" readonly class="form-input mt-1"
+                rows="2"></textarea>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="form-group">
+        <label>Từ khóa (Keywords)</label>
+        <input readonly type="text" [(ngModel)]="formData.keywords" name="kw"
+          placeholder="Nhập từ khóa, cách nhau dấu phẩy..." class="form-input">
+      </div>
+
+
+      <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <button [disabled]="!documentId" style="margin-top: 100px; justify-self: center;" type="button"
+          class="btn-primary-gradient" (click)="openPdf()">
+          MỞ FILE PDF
+        </button>
+      </div>
+
+      <div style="margin-top: 50px;" class="review-box-container">
+        <h3 class="review-title">ĐÁNH GIÁ CỦA THẨM ĐỊNH VIÊN</h3>
+
+        <div class="form-group">
+          <label>Kết quả thẩm định <span class="req">*</span></label>
+          <div class="radio-group">
+            <label class="radio-item success">
+              <input type="radio" name="res" [(ngModel)]="reviewResult" value="OK">
+              <span>OK (Đạt yêu cầu)</span>
+            </label>
+            <label class="radio-item warning">
+              <input type="radio" name="res" [(ngModel)]="reviewResult" value="Nên sửa lại">
+              <span>Nên sửa lại</span>
+            </label>
+            <label class="radio-item danger">
+              <input type="radio" name="res" [(ngModel)]="reviewResult" value="Không đạt">
+              <span>Không đạt (Từ chối)</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group mt-3">
+          <label>Nhận xét / Ghi chú cho Tác giả</label>
+          <textarea [(ngModel)]="reviewNote" name="note" class="form-input review-textarea" rows="4"
+            placeholder="Nhập lý do hoặc các nội dung cần sửa đổi..."></textarea>
+        </div>
+
+        <div class="footer-btn">
+          <button type="submit" class="btn-submit-review" [disabled]="isLoading">
+            {{ isLoading ? 'ĐANG XỬ LÝ...' : 'XÁC NHẬN GỬI KẾT QUẢ' }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

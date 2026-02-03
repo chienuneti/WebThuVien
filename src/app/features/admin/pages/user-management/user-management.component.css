@@ -1,0 +1,204 @@
+/* User Management Page */
+.page-container {
+  padding: 20px;
+  background: #f5f5f5;
+  min-height: 100vh;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0;
+}
+
+.btn-add {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-add:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.search-bar {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.search-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.table-wrapper {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th {
+  background: linear-gradient(180deg, #f7fafc 0%, #edf2f7 100%);
+  padding: 16px;
+  text-align: left;
+  font-weight: 700;
+  color: #2d3748;
+  border-bottom: 2px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+td {
+  padding: 16px;
+  border-bottom: 1px solid #e2e8f0;
+  color: #4a5568;
+}
+
+tbody tr:hover {
+  background: #f7fafc;
+}
+
+.user-name {
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.user-email {
+  font-size: 13px;
+  color: #718096;
+  margin-top: 3px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge.user {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.badge.admin {
+  background: #fce7f3;
+  color: #be123c;
+}
+
+.badge.teacher {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.badge.moderator {
+  background: #e9d5ff;
+  color: #6b21a8;
+}
+
+.badge.active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge.inactive {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.btn-small {
+  padding: 6px 14px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+  color: #667eea;
+  margin: 0 3px;
+}
+
+.btn-small:hover {
+  background: #f7fafc;
+  border-color: #667eea;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+}
+
+.btn-small.danger {
+  color: #f56565;
+}
+
+.btn-small.danger:hover {
+  background: #fff5f5;
+  border-color: #f56565;
+  box-shadow: 0 2px 8px rgba(245, 101, 101, 0.2);
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  table {
+    font-size: 12px;
+  }
+
+  th,
+  td {
+    padding: 12px;
+  }
+
+  .user-name {
+    font-size: 13px;
+  }
+
+  .user-email {
+    display: none;
+  }
+
+  .btn-small {
+    padding: 4px 8px;
+    font-size: 11px;
+    margin: 1px;
+  }
+}

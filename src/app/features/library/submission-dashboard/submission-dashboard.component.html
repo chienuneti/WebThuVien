@@ -1,0 +1,114 @@
+<div class="library-page-wrapper">
+  <button class="btn-back" (click)='goBack()' style="margin-bottom: 10px;">
+    ← Quay lại
+  </button>
+  <header class="content-header">
+    <div class="header-text">
+      <h1 class="page-title">Submission Dashboard</h1>
+      <p style="margin-left: 20px;" class="page-subtitle">Manage and track your submission progress</p>
+    </div>
+
+    <button class="btn-primary-gradient" (click)="goToSubmit()">
+      <span class="btn-icon">＋</span>
+      <span>Submit New Document</span>
+    </button>
+  </header>
+
+  <main class="main-content">
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon total">📂</div>
+        <div class="stat-info">
+          <span class="stat-label">Total Documents</span>
+          <span class="stat-value">{{ totalDocuments }}</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon pending">⏳</div>
+        <div class="stat-info">
+          <span class="stat-label">Pending Review</span>
+          <span class="stat-value">{{ pendingReviewCount }}</span>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon approved">✅</div>
+        <div class="stat-info">
+          <span class="stat-label">Approved</span>
+          <span class="stat-value">{{ approvedCount }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-card-wrapper">
+
+      <div class="table-toolbar">
+        <h2 class="section-title">Submission History</h2>
+        <div class="toolbar-actions">
+          <div class="search-box">
+            <span class="search-icon-symbol">🔍</span>
+            <input type="text" placeholder="Search documents..." />
+          </div>
+          <button class="btn-filter">Filter ▼</button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="styled-table">
+          <thead>
+            <tr>
+              <th width="25%">Document Info</th>
+              <th width="15%">Collection</th>
+              <th>Category</th>
+              <th>Progress</th>
+              <th>Status</th>
+              <th class="text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of submissions" class="table-row" (click)="viewDetail(item.submissionId)">
+
+              <td>
+                <div class="doc-meta">
+                  <span class="doc-title">{{ item.documentTitle || 'Untitled' }}</span>
+                  <span class="doc-id">#{{ item.submissionId }}</span>
+                </div>
+              </td>
+
+              <td>
+                <div class="collection-cell">
+                  <span class="collection-icon">📁</span>
+                  <span class="collection-name">{{ item.collectionName }}</span>
+                </div>
+              </td>
+
+              <td>
+                <span class="category-badge">{{ item.documentType }}</span>
+              </td>
+
+              <td>
+                <div class="progress-cell">
+                  <span class="step-tag">Step {{ item.currentStep }}</span>
+                  <span class="reviewer-tag">👥 {{ item.reviewerCount }} reviewers</span>
+                </div>
+              </td>
+
+              <td>
+                <span class="status-pill" [ngClass]="item.status">
+                  <span class="dot"></span> {{ item.status }}
+                </span>
+              </td>
+
+              <td class="text-right">
+                <button class="btn-view-detail" (click)="viewDetail(item.submissionId); $event.stopPropagation()">View</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>

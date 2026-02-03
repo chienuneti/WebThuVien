@@ -1,0 +1,322 @@
+<div class="page-wrapper">
+
+    <button class="btn-back" (click)='goBack()' style="margin-bottom: 10px;">
+        ← Quay lại
+    </button>
+    <div class="card-container">
+        <h2 class="section-header">
+            {{ isReviseMode ? 'Chỉnh sửa tài liệu' : 'Nộp Tài Liệu' }}
+        </h2>
+
+        <form (ngSubmit)="onSubmit()" #docForm="ngForm">
+
+            <div class="form-row">
+                <div class="form-group col">
+                    <label>Tiêu đề <span class="req">*</span></label>
+                    <input type="text" [(ngModel)]="formData.title" name="title" required class="form-input">
+                </div>
+                <div class="form-group col-sm">
+                    <label>Bộ sưu tập <span class="req">*</span></label>
+                    <select [(ngModel)]="formData.collectionId" name="collectionId" class="form-input"
+                        [disabled]="collections.length === 0">
+                        <option value="" disabled *ngIf="collections.length > 0">-- Chọn bộ sưu tập --</option>
+                        <option value="" disabled *ngIf="collections.length === 0">Bạn không có quyền nộp bài</option>
+                        <option *ngFor="let col of collections" [value]="col.id">{{ col.name }}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Mô tả</label>
+                <textarea [(ngModel)]="formData.description" name="desc" class="form-input" rows="2"></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col">
+                    <label>Loại tài liệu <span class="req">*</span></label>
+                    <select [(ngModel)]="formData.documentType" name="dtype" class="form-input">
+                        <option value="Thesis">Khóa luận/Luận văn</option>
+                        <option value="InternalBook">Sách nội bộ</option>
+                        <option value="ExternalBook">Sách xuất bản</option>
+                        <option value="Research">Nghiên cứu khoa học</option>
+                        <option value="ResearchPublication">Bài báo khoa học</option>
+                    </select>
+                </div>
+                <div class="form-group col">
+                    <label>Ngày xuất bản <span class="req">*</span></label>
+                    <input type="date" [(ngModel)]="formData.publicationDate" name="pDate" class="form-input">
+                </div>
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group col">
+                    <label>Tổng số trang <span class="req">*</span></label>
+                    <input type="number" [(ngModel)]="formData.pageNum" name="pNum" class="form-input"
+                        placeholder="VD: 120">
+                </div>
+                <div class="form-group col">
+                    <label>Trang kết thúc Intro <span class="req">*</span></label>
+                    <input type="number" [(ngModel)]="formData.introEndPage" name="introPage" class="form-input"
+                        placeholder="VD: 10 (số La Mã)">
+                </div>
+            </div>
+
+            <div class="dynamic-box" [ngSwitch]="formData.documentType">
+
+                <div *ngSwitchCase="'Thesis'">
+                    <h4 class="sub-title">Thông tin Luận văn / Đồ án <span class="req">*</span></h4>
+                    <div class="form-row">
+                        <div class="form-group col">
+                            <label>Degree Level <span class="req">*</span></label>
+
+
+                            <select [(ngModel)]="formData.thesis!.degreeLevel" name="th_deg" class="form-input">
+                                <option value="Đại học">Đại học</option>
+                                <option value="Thạc sĩ">Thạc sĩ</option>
+                                <option value="Tiến sĩ">Tiến sĩ</option>
+                            </select>
+                        </div>
+                        <div class="form-group col">
+                            <label>Discipline <span class="req">*</span></label>
+                            <select [(ngModel)]="formData.thesis!.discipline" name="th_dis" class="form-input">
+                                <option *ngFor="let d of availableDiscipline" [value]="d.name">
+                                    {{ d.name }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group mt-2">
+                        <label>Giảng viên hướng dẫn <span class="req">*</span></label>
+                        <input type="text" [(ngModel)]="formData.thesis!.advisorName" name="th_adv"
+                            placeholder="Nhập tên GVHD..." class="form-input">
+                    </div>
+                    <div class="form-group mt-2">
+                        <label>Tóm tắt (Abstract)</label>
+                        <textarea [(ngModel)]="formData.thesis!.abstract" name="th_abs"
+                            placeholder="Tóm tắt nội dung luận văn..." class="form-input" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div *ngSwitchCase="'InternalBook'">
+                    <h4 class="sub-title">Thông tin Giáo trình / Sách nội bộ <span class="req">*</span></h4>
+                    <div class="form-row">
+                        <div class="form-group col">
+                            <label>Khoa <span class="req">*</span></label>
+
+
+                            <select [(ngModel)]="formData.internalBook!.faculty" name="ib_fac" class="form-input">
+                                <option *ngFor="let d of availableFaculties" [value]="d.name">
+                                    {{ d.name }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col">
+                            <label>Loại sách <span class="req">*</span></label>
+
+
+                            <select [(ngModel)]="formData.internalBook!.documentType" name="ib_type" class="form-input">
+                                <option value="Giáo trình">Giáo trình</option>
+                                <option value="Bài giảng">Bài giảng</option>
+                                <option value="Tài liệu ôn tập">Tài liệu ôn tập</option>
+                                <option value="Đề cương học phần">Đề cương học phần</option>
+                            </select>
+                        </div>
+                        <div class="form-group col">
+                            <label>Version <span class="req">*</span></label>
+                            <input type="text" [(ngModel)]="formData.internalBook!.version" name="ib_ver"
+                                placeholder="VD: 1.0, 2024" class="form-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngSwitchCase="'ExternalBook'">
+                    <h4 class="sub-title">Thông tin Sách xuất bản (External) <span class="req">*</span></h4>
+                    <div class="form-row">
+                        <div class="form-group col">
+                            <label>Nhà xuất bản (Publisher) <span class="req">*</span></label>
+                            <input type="text" [(ngModel)]="formData.externalBook!.publisher" name="eb_pub"
+                                placeholder="VD: NXB Giáo Dục, NXB Trẻ" class="form-input">
+                        </div>
+                        <div class="form-group col">
+                            <label>Phiên bản / Tái bản <span class="req">*</span></label>
+                            <input type="text" [(ngModel)]="formData.externalBook!.version" name="eb_ver"
+                                placeholder="VD: Tái bản lần 1" class="form-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngSwitchCase="'Research'">
+                    <h4 class="sub-title">Thông tin Đề tài Nghiên cứu <span class="req">*</span></h4>
+                    <div class="form-group">
+                        <label>Cấp độ nghiên cứu (Research Level) <span class="req">*</span></label>
+
+
+                        <select [(ngModel)]="formData.research!.researchLevel" name="res_lvl" class="form-input">
+                            <option value="Cấp cơ sở (trường/khoa/viện)">Cấp cơ sở (trường/khoa/viện)</option>
+                            <option value="Cấp bộ/ngành">Cấp bộ/ngành</option>
+                            <option value="Cấp nhà nước (cấp quốc gia)">Cấp nhà nước (cấp quốc gia)</option>
+                            <option value="Cấp quốc tế">Cấp quốc tế</option>
+                        </select>
+                    </div>
+                    <div class="form-group mt-2">
+                        <label>Tóm tắt đề tài (Abstract)</label>
+                        <textarea [(ngModel)]="formData.research!.abstract" name="res_abs"
+                            placeholder="Mô tả tóm tắt mục tiêu và kết quả nghiên cứu..." class="form-input"
+                            rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div *ngSwitchCase="'ResearchPublication'">
+                    <h4 class="sub-title">Thông tin Công bố khoa học (Bài báo / Hội thảo) <span class="req">*</span>
+                    </h4>
+                    <div class="form-row">
+                        <div class="form-group col">
+                            <label>Tên Hội nghị / Tạp chí (Venue Name) <span class="req">*</span></label>
+                            <input type="text" [(ngModel)]="formData.researchPublication!.venueName" name="pub_venue"
+                                placeholder="VD: IEEE, Scopus Journal, Hội nghị CNTT 2024..." class="form-input">
+                        </div>
+                        <div class="form-group col">
+                            <label>Loại hình công bố <span class="req">*</span></label>
+                            <select [(ngModel)]="formData.researchPublication!.publicationType" name="pub_type"
+                                class="form-input">
+                                <option value="Conference Paper">Conference Paper</option>
+                                <option value="Journal Article">Journal Article</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="section-wrapper">
+                <label>Tác giả <span class="req">*</span></label>
+                <div *ngFor="let author of formData.authors; let i = index" class="author-card">
+                    <div class="auth-row">
+                        <div class="auth-info">
+                            <div class="form-row dense">
+                                <input type="text" [(ngModel)]="author.name" [name]="'aname'+i" placeholder="Họ tên *"
+                                    class="form-input">
+                                <input type="text" [(ngModel)]="author.email" [name]="'aemail'+i" placeholder="Email"
+                                    class="form-input">
+                            </div>
+                            <div class="form-row dense">
+                                <input type="text" [(ngModel)]="author.orcid" [name]="'aorcid'+i" placeholder="ORCID"
+                                    class="form-input">
+                                <input type="text" [(ngModel)]="author.expertise" [name]="'aexp'+i"
+                                    placeholder="Chuyên môn" class="form-input">
+                            </div>
+                        </div>
+                        <div class="auth-img">
+                            <div style="margin-top: 15px;" class="img-circle" (click)="fileInput.click()">
+                                <img [src]="author.imagePreview || 'assets/images/default-avatar.jpg'"
+                                    alt="Author Avatar">
+
+                                <div class="overlay">Upload</div>
+                            </div>
+
+                            <input #fileInput type="file" (change)="onAuthorImageSelected($event, i)" hidden
+                                accept="image/*">
+                        </div>
+                        <button type="button" (click)="removeAuthor(i)" class="btn-x"
+                            *ngIf="formData.authors.length > 1">✕</button>
+                    </div>
+                </div>
+                <button type="button" (click)="addAuthor()" class="btn-add">+ Thêm Tác giả</button>
+            </div>
+
+            <div class="form-row">
+                <div class="col section-wrapper">
+                    <label>Mã định danh (Identifier) <span class="req">*</span></label>
+                    <div *ngFor="let id of formData.identifiers; let i = index" class="mini-row">
+                        <select [(ngModel)]="id.type" [name]="'idtype'+i" class="form-input sm">
+                            <option *ngFor="let t of identifierTypes" [value]="t">{{t}}</option>
+                        </select>
+                        <input type="text" [(ngModel)]="id.value" [name]="'idval'+i"
+                            placeholder="Giá trị (VD: 978-1...)" class="form-input">
+                        <button type="button" (click)="removeIdentifier(i)" class="btn-x danger">✕</button>
+                    </div>
+                    <button type="button" (click)="addIdentifier()" class="btn-add sm">+ Thêm mã</button>
+                </div>
+
+                <div class="col section-wrapper">
+                    <label>Giấy phép (License) <span class="req">*</span></label>
+
+                    <div *ngFor="let lic of formData.licenses; let i = index" class="license-card">
+
+                        <div *ngIf="lic.uiMode === 'SELECT'" class="mini-row">
+                            <select [ngModel]="lic.selectedId" (ngModelChange)="onLicenseChange(i, $event)"
+                                [name]="'licsel'+i" class="form-input">
+                                <option value="" disabled selected>-- Chọn giấy phép --</option>
+                                <option *ngFor="let item of availableLicenses" [value]="item.id">{{ item.name }}
+                                </option>
+                                <option value="NEW_OPTION" style="font-weight:bold; color:blue;">+ Tạo giấy phép mới...
+                                </option>
+                            </select>
+                            <button type="button" (click)="removeLicense(i)" class="btn-x danger">✕</button>
+                        </div>
+
+                        <div *ngIf="lic.uiMode === 'NEW'" class="new-license-box">
+                            <div class="box-header">
+                                <span>Tạo giấy phép mới</span>
+                                <button type="button" (click)="cancelNewLicense(i)" class="btn-link">Quay lại
+                                    chọn</button>
+                            </div>
+                            <input type="text" [(ngModel)]="lic.name" [name]="'licnewname'+i"
+                                placeholder="Tên giấy phép (VD: MIT Custom)" class="form-input mt-1">
+                            <textarea [(ngModel)]="lic.content" [name]="'liccontent'+i"
+                                placeholder="Nội dung chi tiết điều khoản..." class="form-input mt-1"
+                                rows="2"></textarea>
+                            <div class="text-right">
+                                <button type="button" (click)="removeLicense(i)" class="btn-text-danger">Xóa dòng
+                                    này</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <button type="button" (click)="addLicense()" class="btn-add sm">+ Thêm giấy phép</button>
+                </div>
+            </div>
+
+            <div class="upload-area">
+                <div class="file-row">
+                    <label>
+                        File PDF
+                        <span *ngIf="isReviseMode">(Tải lên nếu muốn thay đổi)</span>
+                        <span *ngIf="!isReviseMode" class="req">*</span>:
+                    </label>
+                    <input type="file" (change)="onMainFileSelected($event, 'pdf')" accept=".pdf">
+                </div>
+                <div class="file-row">
+                    <label>Ảnh bìa <span style="margin-left: 2px;" class="req">*</span>: </label>
+                    <input type="file" (change)="onMainFileSelected($event, 'cover')" accept="image/*">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Từ khóa (Keywords) <span class="req">*</span></label>
+                <input type="text" [(ngModel)]="formData.keywords" name="kw"
+                    placeholder="Nhập từ khóa, cách nhau dấu phẩy..." class="form-input">
+            </div>
+
+            <div class="revision-section" *ngIf="isReviseMode"
+                style="margin-top: 20px; background: #fffbe6; padding: 20px; border: 1px solid #ffe58f; margin-bottom: 20px; border-radius: 8px;">
+                <h3 style="color: #856404; margin-top: 0;">Ghi chú chỉnh sửa</h3>
+                <p style="font-size: 0.9em; color: #666;">Giải thích ngắn gọn những gì bạn đã thay đổi để giúp Reviewer
+                    kiểm tra nhanh hơn.</p>
+                <div class="form-group">
+                    <label>Nội dung thay đổi <span class="req">*</span></label>
+                    <textarea [(ngModel)]="formData.revisionComment" name="revComment" class="form-input" rows="3"
+                        placeholder="Ví dụ: Đã sửa lỗi chính tả chương 1 và cập nhật lại file PDF mới..."></textarea>
+                </div>
+            </div>
+
+            <div style="margin-top: 10px;" class="footer">
+                <button type="submit" class="btn-submit" [disabled]="isLoading">
+                    {{ isLoading ? 'Đang xử lý...' : (isReviseMode ? 'GỬI BẢN CHỈNH SỬA' : 'NỘP TÀI LIỆU') }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

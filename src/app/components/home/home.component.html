@@ -1,0 +1,97 @@
+<div class="home-container">
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Thư Viện Số</h1>
+      <p>Khám phá, đọc và tải tài liệu khoa học từ thư viện số của chúng tôi</p>
+
+      <div class="hero-actions">
+        <a routerLink="/library" class="btn btn-primary">Khám phá thư viện</a>
+        <a *ngIf="!isAuthenticated" routerLink="/dang-nhap" class="btn btn-secondary">
+          Đăng Nhập
+        </a>
+        <a *ngIf="isAuthenticated" routerLink="/profile" class="btn btn-secondary">
+          Hồ sơ của tôi
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="main-content" *ngIf="!loading">
+
+    <section class="doc-section">
+      <div class="section-header">
+        <h2>Tài liệu mới nhất</h2>
+
+        <a [routerLink]="['/library/list']" [queryParams]="{ sortBy: 'newest' }" class="btn-link">
+          Xem tất cả →
+        </a>
+
+      </div>
+      <div class="books-grid">
+        <div *ngFor="let doc of newDocs" class="book-card" [routerLink]="['/library/document', doc.id]">
+          <div class="book-cover">
+            <img [src]="(doc.coverPath || '/assets/images/default-book.png')" (error)="onImgError($event)"
+              [alt]="doc.title">
+          </div>
+          <div class="book-info">
+            <h3 class="book-title">{{ doc.title }}</h3>
+            <span class="badge">{{ doc.documentType }}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="doc-section">
+      <div class="section-header">
+        <h2>Đang Trending</h2>
+        <a [routerLink]="['/library/list']" [queryParams]="{ sortBy: 'trending' }" class="btn-link">
+          Xem tất cả →
+        </a>
+
+      </div>
+      <div class="books-grid">
+        <div *ngFor="let doc of trendingDocs" class="book-card" [routerLink]="['/library/document', doc.id]">
+          <div class="book-cover">
+            <img [src]="'/' + (doc.coverPath || 'assets/images/default-book.png')" (error)="onImgError($event)"
+              [alt]="doc.title">
+          </div>
+          <div class="book-info">
+            <h3 class="book-title">{{ doc.title }}</h3>
+            <div class="book-footer">
+              <span class="badge secondary">{{ doc.documentType }}</span>
+              <span class="stat-text">{{ doc.viewCount }} lượt xem</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="doc-section">
+      <div class="section-header">
+        <h2>Tải xuống nhiều nhất</h2>
+        <a [routerLink]="['/library/list']" [queryParams]="{ sortBy: 'popular' }" class="btn-link">
+          Xem tất cả →
+        </a>
+
+      </div>
+      <div class="books-grid">
+        <div *ngFor="let doc of popularDocs" class="book-card" [routerLink]="['/library/document', doc.id]">
+          <div class="book-cover">
+            <img [src]="'/' + (doc.coverPath || 'assets/images/default-book.png')" (error)="onImgError($event)"
+              [alt]="doc.title">
+          </div>
+          <div class="book-info">
+            <h3 class="book-title">{{ doc.title }}</h3>
+            <div class="book-footer">
+              <span class="badge success">{{ doc.documentType }}</span>
+              <span class="stat-text">{{ doc.downloadCount }} lượt tải</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <div *ngIf="loading" class="loader">Đang tải dữ liệu...</div>
+</div>
