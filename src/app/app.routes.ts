@@ -1,8 +1,12 @@
-import { Routes } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
 import { RegisterComponent } from './components/register/register.component';
 import { LoginComponent } from './components/login/login.component';
 import { ProfileComponent } from './components/profile/profile.component';
+
+
+import { NgModule } from '@angular/core';
+import { BookReaderComponent } from './components/book-reader/book-reader.component';
 
 export const routes: Routes = [
   {
@@ -25,8 +29,6 @@ export const routes: Routes = [
     path: 'library',
     loadChildren: () => import('./features/library/library.routes').then(m => m.LIBRARY_ROUTES)
   },
-
-
   {
     path: 'admin',
     loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES)
@@ -36,3 +38,9 @@ export const routes: Routes = [
     redirectTo: '',
   }
 ];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class LibraryRoutingModule { }

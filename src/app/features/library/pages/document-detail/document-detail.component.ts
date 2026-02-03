@@ -23,6 +23,7 @@ export class DocumentDetailComponent implements OnInit {
   userRating = 5;
   userComment = '';
   isSubmitting = false;
+  isDownloading = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -43,16 +44,12 @@ export class DocumentDetailComponent implements OnInit {
     });
   }
 
-loadReviews(id: string): void {
-  this.documentService.getReviews(id).subscribe({
-    next: (res) => {
-      this.reviews = res;
-    },
-    error: (err) => {
-      console.error('Lỗi khi tải bình luận:', err);
-    }
-  });
-}
+  loadReviews(id: string): void {
+    this.documentService.getReviews(id).subscribe({
+      next: (res) => { this.reviews = res; },
+      error: (err) => { console.error('Lỗi khi tải bình luận:', err); }
+    });
+  }
 
   submitReview(): void {
     if (!this.userComment.trim()) return;
@@ -97,24 +94,60 @@ loadReviews(id: string): void {
     });
   }
 
-  download(file: DocFile): void {
-    if (!this.isLoggedIn) {
-      alert('Vui lòng đăng nhập để tải tài liệu');
-      return;
-    }
-    this.documentService.downloadFile(file.id).subscribe({
-      next: (blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `document_v${file.version}.pdf`;
-        a.click();
-      },
-      error: () => alert('Không thể tải file tại thời điểm này')
-    });
-  }
-
   backToList() {
     this.router.navigate(['/library/assign-approve']);
+  }
+
+  downloadDocument(): void {
+    if (!this.document?.id || this.isDownloading) {
+      return;
+    }
+
+    // Kiểm tra đăng nhập trước khi gọi API (đỡ tốn request nếu chưa login)
+    if (!this.isLoggedIn) {
+      alert('Vui lòng đăng nhập để tải tài liệu.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    this.isDownloading = true;
+
+    this.documentService.logDownload(this.document.id).subscribe({
+      next: () => {
+        // Ghi log thành công, tiếp tục tải file
+      },
+      error: (err) => {
+        console.error('Lỗi ghi log tải xuống:', err);
+      }
+    });
+    this.documentService.downloadDocument(this.document.id).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        
+        const sanitizedTitle = this.document?.title.replace(/[^a-z0-9]/gi, '_') || 'document';
+        const version = this.files[0]?.version || '1';
+        const fileName = `${sanitizedTitle}_v${version}.pdf`;
+        
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        
+        this.isDownloading = false;
+      },
+      error: (err) => {
+        console.error('Download error:', err);
+        if (err.status === 401) {
+            alert('Phiên đăng nhập hết hạn hoặc bạn không có quyền tải file này.');
+        } else {
+            alert('Lỗi tải xuống. Vui lòng thử lại sau.');
+        }
+        this.isDownloading = false;
+      }
+    });
   }
 }

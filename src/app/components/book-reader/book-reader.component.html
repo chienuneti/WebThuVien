@@ -1,0 +1,202 @@
+<div class="reader-container">
+  <!-- Loading Overlay (không ẩn nội dung bên dưới) -->
+  <div *ngIf="loading" class="loading-overlay">
+    <div class="spinner"></div>
+    <p>Đang tải tài liệu...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-container">
+    <div class="error-message">
+      <i class="error-icon">⚠️</i>
+      <h2>Có lỗi xảy ra</h2>
+      <p>{{ error }}</p>
+      <button (click)="goBack()" class="btn-primary">Quay lại</button>
+    </div>
+  </div>
+
+  <!-- Main Reader - LUÔN RENDER để canvas tồn tại -->
+  <div class="reader-content" [class.hidden]="loading || error">
+
+    <!-- Header -->
+    <header class="reader-header">
+      <div class="header-left">
+        <button (click)="goBack()" class="btn-back">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path
+              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" />
+          </svg>
+          Quay lại
+        </button>
+
+        <!-- Document Title -->
+        <div class="document-title" *ngIf="document as doc">
+          <h1>{{ doc.title }}</h1>
+
+          <p class="document-meta">
+            <span>{{ currentPage + 1 }} / {{ totalPages }}</span>
+
+            <span *ngIf="!isAuthenticated" class="guest-indicator">
+              (Chế độ xem trước: Trang 1-{{ maxPageForGuest + 1 }})
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Progress -->
+      <div class="header-right" *ngIf="document">
+        <div class="progress-bar-container">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="progressPercentage"></div>
+          </div>
+          <span class="progress-text">{{ progressPercentage }}%</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Toolbar -->
+    <div class="reader-toolbar">
+      <div class="toolbar-group">
+        <!-- Previous -->
+        <button
+          (click)="previousPage()"
+          [disabled]="!canGoBack"
+          class="toolbar-btn"
+          title="Trang trước">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path
+              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" />
+          </svg>
+        </button>
+
+        <!-- Page Input -->
+        <div class="page-input-group">
+          <input
+            type="number"
+            [value]="currentPage + 1"
+            (change)="onPageInputChange($event)"
+            min="1"
+            [max]="totalPages"
+            class="page-input" />
+
+          <span class="page-total">/ {{ totalPages }}</span>
+        </div>
+
+        <!-- Next -->
+        <button
+          (click)="nextPage()"
+          [disabled]="!canGoForward"
+          class="toolbar-btn"
+          title="Trang sau">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path
+              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Zoom -->
+      <div class="toolbar-group">
+        <button (click)="zoomOut()" class="toolbar-btn" title="Thu nhỏ">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" />
+          </svg>
+        </button>
+
+        <span class="zoom-level">{{ (scale * 100).toFixed(0) }}%</span>
+
+        <button (click)="zoomIn()" class="toolbar-btn" title="Phóng to">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path
+              d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" />
+          </svg>
+        </button>
+
+        <button (click)="resetZoom()" class="toolbar-btn" title="Đặt lại zoom">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path
+              d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Guest Login -->
+      <div class="toolbar-group" *ngIf="!isAuthenticated">
+        <button (click)="goToLogin()" class="btn-login">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+            <path
+              fill-rule="evenodd"
+              d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
+          </svg>
+          Đăng nhập để xem toàn bộ
+        </button>
+      </div>
+
+      <!-- Debug -->
+      <div class="toolbar-group">
+        <button (click)="debugInfo()" class="toolbar-btn" title="Debug Info">
+          🐛
+        </button>
+      </div>
+    </div>
+
+    <!-- PDF Viewer -->
+    <div class="pdf-viewer">
+      <div class="pdf-container">
+        <canvas id="pdf-canvas"></canvas>
+
+        <!-- Watermark -->
+        <div *ngIf="!isAuthenticated && pdfDoc" class="watermark">
+          Chế độ xem trước - Đăng nhập để xem toàn bộ tài liệu
+        </div>
+      </div>
+    </div>
+
+    <!-- Login Prompt Modal -->
+    <div *ngIf="showLoginPrompt" class="modal-overlay" (click)="closeLoginPrompt()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+
+        <div class="modal-header">
+          <h2>Yêu cầu đăng nhập</h2>
+          <button (click)="closeLoginPrompt()" class="btn-close">
+            <svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+              <path
+                fill-rule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="lock-icon">
+            <svg width="64" height="64" viewBox="0 0 20 20" fill="currentColor">
+              <path
+                fill-rule="evenodd"
+                d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" />
+            </svg>
+          </div>
+
+          <p class="modal-message">
+            Bạn đang ở chế độ xem trước. Để xem toàn bộ {{ totalPages }} trang của tài liệu này,
+            vui lòng đăng nhập.
+          </p>
+
+          <p class="modal-info">
+            Hiện tại bạn có thể xem từ trang 1 đến trang {{ maxPageForGuest + 1 }}.
+          </p>
+        </div>
+
+        <div class="modal-footer">
+          <button (click)="closeLoginPrompt()" class="btn-secondary">
+            Tiếp tục xem trước
+          </button>
+
+          <button (click)="goToLogin()" class="btn-primary">
+            Đăng nhập ngay
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

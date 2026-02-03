@@ -21,7 +21,7 @@ export const LIBRARY_ROUTES: Routes = [
   },
   {
     path: 'read/:id',
-    loadComponent: () => import('./pages/book-reader/book-reader.component').then(m => m.BookReaderComponent)
+    loadComponent: () => import('../../components/book-reader/book-reader.component').then(m => m.BookReaderComponent)
   },
   {
     path: 'read-history',

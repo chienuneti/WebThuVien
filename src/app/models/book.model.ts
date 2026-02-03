@@ -21,10 +21,13 @@ export interface Review {
   documentId: string;
   userId: string;
   userName: string;
-  rating: number;
-  content: string;
+  rating?: number;
+  content?: string;
   createdAt: string;
+  updatedAt?: string;
+  isCurrentUser?: boolean;
 }
+
 
 export interface CommunityTreeDto {
   id: string;

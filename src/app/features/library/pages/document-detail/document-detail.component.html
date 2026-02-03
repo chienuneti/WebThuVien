@@ -11,9 +11,12 @@
             Đọc trực tuyến
           </a>
 
-          <button class="btn-secondary" *ngIf="files.length > 0" (click)="download(files[0])">
-            Tải xuống (V{{files[0].version}})
-          </button>
+          <button class="btn-secondary" 
+        *ngIf="files.length > 0" 
+        (click)="downloadDocument()"
+        [disabled]="isDownloading">
+  {{ isDownloading ? 'Đang tải...' : 'Tải xuống (V' + files[0].version + ')' }}
+</button>
         </div>
       </div>
 

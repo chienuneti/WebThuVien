@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import {
   DocumentListDto,
@@ -18,6 +18,80 @@ export class DocumentService {
   private apiUrl = `${environment.apiUrl}/documents`;
 
   constructor(private http: HttpClient) { }
+
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('auth_token');
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    
+    return headers;
+  }
+
+  // ==================== REVIEW METHODS ====================
+  
+  getReviews(docId: string): Observable<Review[]> {
+    return this.http.get<Review[]>(
+      `${this.apiUrl}/${docId}/reviews`
+    );
+  }
+
+  addReview(docId: string, rating: number, content: string): Observable<any> {
+    const body = { rating, content };
+    return this.http.post(
+      `${this.apiUrl}/${docId}/reviews`,
+      body,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  updateReview(docId: string, reviewId: number, rating?: number, content?: string): Observable<any> {
+    const body: any = {};
+    if (rating !== undefined) body.rating = rating;
+    if (content !== undefined) body.content = content;
+    
+    return this.http.put(
+      `${this.apiUrl}/${docId}/reviews/${reviewId}`,
+      body,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  deleteReview(docId: string, reviewId: number): Observable<any> {
+    return this.http.delete(
+      `${this.apiUrl}/${docId}/reviews/${reviewId}`,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  getReviewStats(docId: string): Observable<any> {
+    return this.http.get(
+      `${this.apiUrl}/${docId}/reviews/stats`
+    );
+  }
+
+  // ==================== DOWNLOAD METHODS ====================
+
+  logDownload(documentId: string): Observable<any> {
+    const url = `${environment.apiUrl}/Downloads`;
+    return this.http.post(url, { documentId }, { headers: this.getHeaders() });
+  }
+
+  downloadDocument(id: string): Observable<Blob> {
+    return this.http.get(
+      `${this.apiUrl}/${id}/download`,
+      { 
+        responseType: 'blob',
+        headers: this.getHeaders()
+      }
+    );
+  }
+
+  // ==================== DOCUMENT METHODS ====================
 
   getAll(page: number = 1, pageSize: number = 10): Observable<PaginatedResult<DocumentListDto>> {
     const params = new HttpParams()
@@ -38,17 +112,9 @@ export class DocumentService {
       { params: { keyword } }
     );
   }
+
   getAllLicenses() {
     return this.http.get(`${environment.apiUrl}/Documents/licenses`);
-  }
-
-
-  getReviews(docId: string): Observable<Review[]> {
-    return this.http.get<Review[]>(`${this.apiUrl}/${docId}/reviews`);
-  }
-
-  addReview(docId: string, rating: number, content: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/${docId}/reviews`, { rating, content });
   }
 
   create(dto: any): Observable<string> {
@@ -108,11 +174,9 @@ export class DocumentService {
     return of(types);
   }
 
-
   getDocuments(params: any): Observable<PaginatedResult<DocumentListDto>> {
     return this.http.get<PaginatedResult<DocumentListDto>>(this.apiUrl, { params });
   }
-
 
   createDocument(data: CreateDocumentForm): Observable<any> {
     const formData = new FormData();
@@ -201,7 +265,6 @@ export class DocumentService {
 
     return this.http.post(`${this.apiUrl}/create`, formData);
   }
-
 
   updateDocument(submissionId: string, data: any) {
     const formData = new FormData();
