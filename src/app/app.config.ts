@@ -6,7 +6,7 @@ import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { environment } from '../environments/environment';
 import { AuthService } from './shared/services/auth.service';
-import { AuthServiceMock } from './shared/services/auth.service.mock';
+// import { AuthServiceMock } from './shared/services/auth.service.mock';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,7 +18,7 @@ export const appConfig: ApplicationConfig = {
     // Use mock or real auth service based on environment
     {
       provide: AuthService,
-      useClass: environment.useMockBackend ? AuthServiceMock : AuthService,
+      // useClass: environment.useMockBackend ? AuthServiceMock : AuthService,
     },
   ]
 };

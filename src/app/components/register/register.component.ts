@@ -144,21 +144,21 @@ export class RegisterComponent implements OnInit {
       password: this.registerForm.value.password
     };
 
-    this.authService.register(formData).subscribe({
-      next: (response) => {
-        this.isLoading = false;
-        if (response.success) {
-          this.successMessage = 'Đăng ký thành công! Chuyển hướng...';
-          setTimeout(() => {
-            this.router.navigate(['/']);
-          }, 2000);
-        }
-      },
-      error: (error) => {
-        this.isLoading = false;
-        this.errorMessage = error.message || 'Đăng ký thất bại. Vui lòng thử lại.';
-      }
-    });
+    // this.authService.register(formData).subscribe({
+    //   next: (response) => {
+    //     this.isLoading = false;
+    //     if (response.success) {
+    //       this.successMessage = 'Đăng ký thành công! Chuyển hướng...';
+    //       setTimeout(() => {
+    //         this.router.navigate(['/']);
+    //       }, 2000);
+    //     }
+    //   },
+    //   error: (error) => {
+    //     this.isLoading = false;
+    //     this.errorMessage = error.message || 'Đăng ký thất bại. Vui lòng thử lại.';
+    //   }
+    // });
   }
 
 

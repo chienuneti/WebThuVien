@@ -1,58 +1,258 @@
-<div class="profile-container">
-  <div *ngIf="isLoading" class="loading">
-    <div class="spinner"></div>
-    <p>Đang tải hồ sơ...</p>
-  </div>
-
-  <div *ngIf="!isLoading && user" class="profile-card">
-    <div class="profile-header">
-      <img [src]="user.avatar" [alt]="user.fullName" class="avatar" />
-      <div class="profile-info">
-        <h1>{{ user.fullName }}</h1>
-        <p class="username">&#64;{{ user.username }}</p>
+<div class="user-profile-container">
+  <!-- Sidebar bên trái -->
+  <aside class="sidebar">
+    <div class="user-avatar">
+      <div class="avatar-circle">
+        <span>{{ userProfile?.name?.charAt(0) || 'U' }}</span>
       </div>
+      <h2 class="user-name">{{ userProfile?.name || 'Đang tải...' }}</h2>
+      <p class="user-email">{{ userProfile?.email }}</p>
     </div>
 
-    <div class="profile-details">
-      <div class="detail-item">
-        <span class="label">Email:</span>
-        <span class="value">{{ user.email }}</span>
+    <nav class="sidebar-nav">
+      <button 
+        class="nav-item" 
+        [class.active]="activeSection === 'info'"
+        (click)="setActiveSection('info')">
+        <span class="icon">👤</span>
+        <span>Thông tin cá nhân</span>
+      </button>
+
+      <button 
+        class="nav-item" 
+        [class.active]="activeSection === 'saved'"
+        (click)="setActiveSection('saved')">
+        <span class="icon">📚</span>
+        <span>Sách đã lưu</span>
+        <span class="badge">{{ savedBooks.length }}</span>
+      </button>
+
+      <button 
+        class="nav-item" 
+        [class.active]="activeSection === 'reading'"
+        (click)="setActiveSection('reading')">
+        <span class="icon">📖</span>
+        <span>Sách đang đọc</span>
+        <span class="badge">{{ currentlyReading.length }}</span>
+      </button>
+
+      <button 
+        class="nav-item" 
+        [class.active]="activeSection === 'upload-history'"
+        (click)="setActiveSection('upload-history')">
+        <span class="icon">⬆️</span>
+        <span>Lịch sử đẩy sách</span>
+      </button>
+
+      <button 
+        class="nav-item" 
+        [class.active]="activeSection === 'download-history'"
+        (click)="setActiveSection('download-history')">
+        <span class="icon">⬇️</span>
+        <span>Lịch sử tải sách</span>
+      </button>
+      
+      <button 
+        class="nav-item" 
+        [class.active]="activeSection === 'logout'"
+        (click)="logout()">
+        <span class="icon">⏻</span>
+        <span>Đăng xuất </span>
+      </button>
+    </nav>
+  </aside>
+
+  <!-- Nội dung chính bên phải -->
+  <main class="main-content">
+    <!-- Loading state -->
+    <div *ngIf="loading" class="loading">
+      <div class="spinner"></div>
+      <p>Đang tải dữ liệu...</p>
+    </div>
+
+    <!-- Error state -->
+    <div *ngIf="error" class="error-message">
+      <p>{{ error }}</p>
+    </div>
+
+     <!-- Thông tin cá nhân -->
+    <section *ngIf="activeSection === 'info' && !loading" class="content-section">
+      <h1 class="section-title">Thông tin cá nhân</h1>
+      
+      <div class="info-card">
+        <form (ngSubmit)="updateProfile()" #profileForm="ngForm">
+          <div class="info-row">
+            <span class="info-label">Họ và tên:</span>
+            <span class="info-value">
+              <input 
+                type="text" 
+                class="form-input"
+                name="fullName" 
+                [(ngModel)]="editProfile.name"/>
+                <!-- {{userProfile?.name}} -->
+            </span>
+          </div>
+          
+          <div class="info-row">
+            <span class="info-label">Email:</span>
+            <span class="info-value readonly">{{ userProfile?.email }}</span>
+          </div>
+          
+          <div class="info-row">
+            <span class="info-label">Lớp:</span>
+            <span class="info-value readonly">{{ userProfile?.class }}</span>
+          </div>
+          
+          <div class="info-row">
+            <span class="info-label">Số điện thoại:</span>
+            <span class="info-value">
+              <input 
+                type="tel" 
+                class="form-input"
+                name="phoneNumber" 
+                [(ngModel)]="editProfile.phoneNumber"
+                pattern="[0-9]{10,11}"
+                placeholder="Nhập số điện thoại"/>
+            </span>
+          </div>
+
+          <div class="form-actions">
+            <button 
+              type="submit" 
+              class="btn btn-primary"
+              [disabled]="!profileForm.valid || isUpdating">
+              {{ isUpdating ? 'Đang cập nhật...' : 'Cập nhật thông tin' }}
+            </button>
+          </div>
+        </form>
       </div>
-      <div class="detail-item">
-        <span class="label">Số điện thoại:</span>
-        <span class="value">{{ user.phoneNumber || 'Chưa cập nhật' }}</span>
-      </div>
-      <div class="detail-item">
-        <span class="label">ID:</span>
-        <span class="value">{{ user.id }}</span>
-      </div>
-      <div class="detail-item" *ngIf="user.role">
-        <span class="label">Quyền:</span>
-        <span class="value role-badge" [style.backgroundColor]="permissionService.getRoleColor(user.role)">
-          {{ permissionService.getRoleLabel(user.role) }}
-        </span>
-      </div>
-      <div class="detail-item" *ngIf="user.permissions && user.permissions.length">
-        <span class="label">Permissions:</span>
-        <div class="permissions-list">
-          <span class="permission-tag" *ngFor="let perm of user.permissions">
-            {{ perm }}
-          </span>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number">{{ savedBooks.length }}</div>
+          <div class="stat-label">Sách đã lưu</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-number">{{ currentlyReading.length }}</div>
+          <div class="stat-label">Đang đọc</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-number">{{ uploadHistory.length }}</div>
+          <div class="stat-label">Đã đẩy lên</div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-number">{{ downloadHistory.length }}</div>
+          <div class="stat-label">Đã tải xuống</div>
         </div>
       </div>
-      <div class="detail-item">
-        <span class="label">Ngày tạo:</span>
-        <span class="value">{{ user.createdAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+    </section>
+    <!-- Sách đã lưu -->
+    <section *ngIf="activeSection === 'saved'" class="content-section">
+      <h1 class="section-title">Sách đã lưu</h1>
+      
+      <div *ngIf="savedBooks.length === 0" class="empty-state">
+        <p>📚 Bạn chưa lưu sách nào</p>
       </div>
-      <div class="detail-item">
-        <span class="label">Cập nhật lần cuối:</span>
-        <span class="value">{{ user.updatedAt | date: 'dd/MM/yyyy HH:mm' }}</span>
-      </div>
-    </div>
 
-    <div class="profile-actions">
-      <button class="btn btn-secondary" routerLink="/">Trang Chủ</button>
-      <button class="btn btn-danger" (click)="logout()">Đăng Xuất</button>
-    </div>
-  </div>
+      <div class="books-grid">
+        <div *ngFor="let book of savedBooks" class="book-card" [routerLink]="['/library/book', book.documentId]">
+          <img 
+            [src]="book.coverPath || 'assets/default-book-cover.jpg'" 
+            [alt]="book.title"
+            class="book-cover">
+          
+          <div class="book-info">
+            <h3 class="book-title">{{ book.title }}</h3>
+            <!-- <p class="book-author">{{ book.author }}</p> -->
+            
+            <div class="book-actions">
+              <button class="btn btn-primary" (click)="continueReading(book.documentId)">
+                Đọc ngay
+              </button>
+              <button class="btn btn-danger" (click)="removeSavedBook(book.documentId)">
+                Xóa
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sách đang đọc -->
+    <section *ngIf="activeSection === 'reading'" class="content-section">
+      <h1 class="section-title">Sách đang đọc</h1>
+      
+      <div *ngIf="currentlyReading.length === 0" class="empty-state">
+        <p>📖 Bạn chưa đọc sách nào</p>
+      </div>
+
+      <div class="books-grid">
+        <div *ngFor="let book of currentlyReading" class="book-card"[routerLink]="['/library/book', book.documentId]">
+          <img 
+            [src]="book.coverPath || 'assets/default-book-cover.jpg'" 
+            [alt]="book.title"
+            class="book-cover">
+          
+          <div class="book-info">
+            <h3 class="book-title">{{ book.title }}</h3>
+            <!-- <p class="book-author">{{ book.author }}</p> -->
+            
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="book.progress || 0"></div>
+            </div>
+            <p class="progress-text">{{ book.progress || 0 }}% hoàn thành</p>
+            
+            <div class="book-actions">
+              <button class="btn btn-primary" (click)="continueReading(book.documentId)">
+                Tiếp tục đọc
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lịch sử đẩy sách -->
+    <section *ngIf="activeSection === 'upload-history'" class="content-section">
+      <h1 class="section-title">Lịch sử đẩy sách lên</h1>
+      
+      <div *ngIf="uploadHistory.length === 0" class="empty-state">
+        <p>⬆️ Bạn chưa đẩy sách nào lên thư viện</p>
+      </div>
+
+      <div class="history-list">
+        <div *ngFor="let item of uploadHistory" class="history-item">
+          <div class="history-icon upload">⬆️</div>
+          <div class="history-details">
+            <h3 class="history-title">{{ item.bookTitle }}</h3>
+            <!-- <p class="history-author">{{ item.bookAuthor }}</p> -->
+            <p class="history-date">{{ formatDate(item.date) }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lịch sử tải sách -->
+    <section *ngIf="activeSection === 'download-history'" class="content-section">
+      <h1 class="section-title">Lịch sử tải sách</h1>
+      
+      <div *ngIf="downloadHistory.length === 0" class="empty-state">
+        <p>⬇️ Bạn chưa tải sách nào</p>
+      </div>
+
+      <div class="history-list">
+        <div *ngFor="let item of downloadHistory" class="history-item">
+          <div class="history-icon download">⬇️</div>
+          <div class="history-details">
+            <h3 class="history-title">{{ item.bookTitle }}</h3>
+            <p class="history-author">{{ item.bookAuthor }}</p>
+            <p class="history-date">{{ formatDate(item.date) }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 </div>

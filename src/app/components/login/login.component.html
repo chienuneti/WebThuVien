@@ -1,33 +1,38 @@
 <div class="login-container">
   <div class="login-card">
+    <!-- Header -->
     <div class="login-header">
       <h1>Đăng Nhập</h1>
       <p>Truy cập vào tài khoản của bạn</p>
     </div>
 
+    <!-- Error Message -->
     <div *ngIf="errorMessage" class="alert alert-error">
       <span class="alert-icon">⚠️</span>
       {{ errorMessage }}
     </div>
 
+    <!-- Login Form -->
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Username/Email -->
       <div class="form-group">
-        <label for="username" class="form-label">
-          Tài khoản hoặc Email <span class="required">*</span>
+        <label for="email" class="form-label">
+          Email <span class="required">*</span>
         </label>
         <input
           type="text"
-          id="username"
-          formControlName="username"
+          id="email"
+          formControlName="email"
           class="form-control"
-          [class.is-invalid]="isFieldInvalid('username')"
+          [class.is-invalid]="isFieldInvalid('email')"
           placeholder="Nhập tài khoản hoặc email"
         />
-        <div *ngIf="isFieldInvalid('username')" class="error-text">
+        <div *ngIf="isFieldInvalid('email')" class="error-text">
           Tài khoản hoặc email là bắt buộc
         </div>
       </div>
 
+      <!-- Password -->
       <div class="form-group">
         <label for="password" class="form-label">
           Mật Khẩu <span class="required">*</span>
@@ -55,6 +60,7 @@
         </div>
       </div>
 
+      <!-- Remember & Forgot Password -->
       <div class="login-options">
         <div class="checkbox">
           <input
@@ -73,6 +79,7 @@
         </a>
       </div>
 
+      <!-- Submit Button -->
       <button
         type="submit"
         class="btn btn-primary"
@@ -80,24 +87,6 @@
       >
         {{ isLoading ? 'Đang đăng nhập...' : 'Đăng Nhập' }}
       </button>
-
-      <div class="divider">
-        <span>hoặc</span>
-      </div>
-
-      <button
-        type="button"
-        class="btn btn-google"
-        (click)="loginWithGoogle()"
-        [disabled]="isLoading"
-      >
-        <span class="google-icon">G</span>
-        Đăng nhập bằng Google
-      </button>
     </form>
-
-    <div class="register-link">
-      <p>Chưa có tài khoản? <a (click)="goToRegister()" class="link">Đăng ký ngay</a></p>
-    </div>
   </div>
 </div>

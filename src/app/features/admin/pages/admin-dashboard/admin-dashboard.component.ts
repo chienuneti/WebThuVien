@@ -414,7 +414,7 @@ export class AdminDashboardComponent implements OnInit {
   ngOnInit(): void {
     const user = this.authService.getCurrentUser();
     if (user) {
-      this.userName = user.fullName || user.username;
+      this.userName = user.fullName;
     }
   }
 

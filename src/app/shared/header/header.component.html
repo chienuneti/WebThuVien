@@ -14,14 +14,11 @@
         <a routerLink="/dang-nhap" routerLinkActive="active">
           Đăng Nhập
         </a>
-        <a routerLink="/dang-ki" routerLinkActive="active">
-          Đăng Ký
-        </a>
       </ng-container>
 
       <ng-container *ngIf="isAuthenticated && user">
         <a routerLink="/profile" routerLinkActive="active">
-          <img [src]="user.avatar" [alt]="user.fullName" class="user-avatar" />
+          <!-- <img [src]="user.avatar" [alt]="user.fullName" class="user-avatar" /> -->
           <div class="user-info">
             <span class="user-name">{{ user.fullName }}</span>
             <span class="user-role" *ngIf="user.role">
@@ -29,9 +26,6 @@
             </span>
           </div>
         </a>
-        <button class="btn-logout" (click)="logout()">
-          Đăng Xuất
-        </button>
       </ng-container>
     </nav>
 
